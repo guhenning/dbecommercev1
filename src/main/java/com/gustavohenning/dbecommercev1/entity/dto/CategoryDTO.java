@@ -8,7 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Data
-public class CategoryDto {
+public class CategoryDTO {
     private Long id;
     private String name;
     @CreationTimestamp
@@ -17,8 +17,8 @@ public class CategoryDto {
     @UpdateTimestamp
     private LocalDateTime updatedDate;
 
-    public static CategoryDto from(Category category) {
-        CategoryDto categoryDto = new CategoryDto();
+    public static CategoryDTO from(Category category) {
+        CategoryDTO categoryDto = new CategoryDTO();
         categoryDto.setId(category.getId());
         categoryDto.setName(category.getName());
         categoryDto.setCreatedDate(category.getCreatedDate());

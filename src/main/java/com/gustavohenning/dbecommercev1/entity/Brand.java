@@ -32,10 +32,16 @@ public class Brand {
 
     public static Brand from(BrandDTO brandDto) {
         Brand brand = new Brand();
-        brand.setName(brandDto.getName());
-        brand.setCreatedDate(brandDto.getCreatedDate());
-        brand.setUpdatedDate(brandDto.getUpdatedDate());
-        return brand;
+
+        if (brandDto !=null) {
+            brand.setName(brandDto.getName());
+            brand.setCreatedDate(brandDto.getCreatedDate());
+            brand.setUpdatedDate(brandDto.getUpdatedDate());
+            return brand;
+        } else {
+            return null;
+        }
+
 
     }
 
