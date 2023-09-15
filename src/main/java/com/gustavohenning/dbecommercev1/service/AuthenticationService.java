@@ -97,7 +97,7 @@ public class AuthenticationService {
 
         } else if (postalCode.length() == 8) {
             // API CEP
-            URL url = new URL("https://brasilapi.com.br/api/cep/v1/" + user.getPostalCode());
+            URL url = new URL("https://brasilapi.com.br/api/cep/v1/" + postalCode);
             URLConnection connection = url.openConnection();
             InputStream is = connection.getInputStream();
             BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
