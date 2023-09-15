@@ -1,18 +1,15 @@
 package com.gustavohenning.dbecommercev1.entity.dto;
 
 import com.gustavohenning.dbecommercev1.entity.ApplicationUser;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginResponseDTO {
     private ApplicationUser user;
     private String jwt;
+
 
 
 }

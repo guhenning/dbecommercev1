@@ -25,6 +25,14 @@ public class ApplicationUser implements UserDetails {
     @Column(unique=true)
     private String username;
     private String password;
+    private String name;
+    private String email;
+    private String postalCode;
+    private String state;
+    private String city;
+    private String neighborhood;
+    private String street;
+
 
     @ManyToMany(fetch=FetchType.EAGER)
     @JoinTable(
