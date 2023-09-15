@@ -71,7 +71,31 @@ public class AuthenticationService {
     public  ApplicationUser getAddress(ApplicationUser user) throws Exception {
         String postalCode = user.getPostalCode();
 
-        if (postalCode.length() == 8) {
+        if (postalCode.length() == 5) {
+            // API Zippopotamus
+            URL url = new URL("https://api.zippopotam.us/ES/" + postalCode);
+            URLConnection connection = url.openConnection();
+            InputStream is = connection.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+
+            StringBuilder jsonCep = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                jsonCep.append(line);
+            }
+            JsonElement rootElement = JsonParser.parseString(jsonCep.toString());
+            JsonObject jsonObject = rootElement.getAsJsonObject();
+
+            String city = jsonObject.getAsJsonArray("places").get(0).getAsJsonObject().get("place name").getAsString();
+            String state = jsonObject.getAsJsonArray("places").get(0).getAsJsonObject().get("state").getAsString();
+
+            user.setCity(city);
+            user.setState(state);
+
+            br.close();
+            is.close();
+
+        } else if (postalCode.length() == 8) {
             // API CEP
             URL url = new URL("https://brasilapi.com.br/api/cep/v1/" + user.getPostalCode());
             URLConnection connection = url.openConnection();
@@ -104,8 +128,9 @@ public class AuthenticationService {
             is.close();
 
         } else {
-            throw new IllegalArgumentException("Invalid postal code");
+            throw new IllegalArgumentException("Invalid postal code only BR and ES available");
         }
+
         return user;
     }
 
