@@ -1,4 +1,4 @@
-package com.gustavohenning.dbecommercev1.service;
+package com.gustavohenning.dbecommercev1.service.impl;
 
 import com.gustavohenning.dbecommercev1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserServiceImpl implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder encoder;

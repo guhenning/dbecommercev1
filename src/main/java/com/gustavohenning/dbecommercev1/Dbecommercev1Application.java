@@ -30,7 +30,7 @@ public class Dbecommercev1Application {
 			Set<Role> roles = new HashSet<>();
 			roles.add(adminRole);
 
-			ApplicationUser admin = new ApplicationUser(1, "admin", passwordEncode.encode("password"), roles);
+			ApplicationUser admin = new ApplicationUser(1L, "admin", passwordEncode.encode("password"), "null", "null", "null", "null", "null", "null", "null", roles);
 
 			userRepository.save(admin);
 		};
