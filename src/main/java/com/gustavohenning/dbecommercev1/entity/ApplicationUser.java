@@ -9,7 +9,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -35,47 +34,11 @@ public class ApplicationUser implements UserDetails {
     )
     private Set<Role> authorities;
 
-//    public ApplicationUser() {
-//        super();
-//        authorities = new HashSet<>();
-//    }
-
-
-//    public ApplicationUser(Integer userId, String username, String password, Set<Role> authorities) {
-//        super();
-//        this.userId = userId;
-//        this.username = username;
-//        this.password = password;
-//        this.authorities = authorities;
-//    }
-
-
-//    public void setAuthorities(Set<Role> authorities) {
-//        this.authorities = authorities;
-//    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.authorities;
     }
-
-//    @Override
-//    public String getPassword() {
-//        return this.password;
-//    }
-//
-//    public void setPassword(String password) {
-//        this.password = password;
-//    }
-//
-//    @Override
-//    public String getUsername() {
-//        return this.username;
-//    }
-//
-//    public void setUsername(String username) {
-//        this.username = username;
-//    }
 
     @Override
     public boolean isAccountNonExpired() {
