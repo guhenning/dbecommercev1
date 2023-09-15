@@ -56,7 +56,7 @@ public class AuthenticationService {
 
         authorities.add(userRole);
 
-        ApplicationUser userWithAddress = new ApplicationUser(0, username, encodedPassword, name, email, postalCode, state, city, neighborhood, street, authorities);
+        ApplicationUser userWithAddress = new ApplicationUser(0L, username, encodedPassword, name, email, postalCode, state, city, neighborhood, street, authorities);
         getAddress(userWithAddress);
 
         try {

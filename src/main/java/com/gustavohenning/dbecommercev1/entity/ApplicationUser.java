@@ -21,7 +21,7 @@ public class ApplicationUser implements UserDetails {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer userId;
+    private Long userId;
     @Column(unique=true)
     private String username;
     private String password;
