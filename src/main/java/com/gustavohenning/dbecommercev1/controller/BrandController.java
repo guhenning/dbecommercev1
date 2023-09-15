@@ -26,13 +26,7 @@ public class BrandController {
         this.brandRepository = brandRepository;
     }
 
-   // @Operation(summary = "Add New Brand", description = "Add a new Brand to DB")
-    @PostMapping
-    @Secured("ROLE_ADMIN")
-    public ResponseEntity<BrandDTO> addBrand(@RequestBody final BrandDTO brandDto) {
-        Brand brand = brandService.addBrand(Brand.from(brandDto));
-        return new ResponseEntity<>(BrandDTO.from(brand), HttpStatus.CREATED);
-    }
+
 
    // @Operation(summary = "Get All Brands", description = "Get All Brands in DB")
     @GetMapping
@@ -56,13 +50,15 @@ public class BrandController {
         List<BrandDTO> brandDtos = brands.stream().map(BrandDTO::from).collect(Collectors.toList());
         return new ResponseEntity<>(brandDtos, HttpStatus.OK);
     }
-    //@Operation(summary = "Delete Brand by ID", description = "Delete the Brand from ID in DB")
-    @DeleteMapping(value = "{id}")
+
+    // @Operation(summary = "Add New Brand", description = "Add a new Brand to DB")
+    @PostMapping
     @Secured("ROLE_ADMIN")
-    public ResponseEntity<BrandDTO> deleteBrand(@PathVariable final Long id) {
-        Brand brand = brandService.deleteBrand(id);
-        return new ResponseEntity<>(BrandDTO.from(brand), HttpStatus.OK);
+    public ResponseEntity<BrandDTO> addBrand(@RequestBody final BrandDTO brandDto) {
+        Brand brand = brandService.addBrand(Brand.from(brandDto));
+        return new ResponseEntity<>(BrandDTO.from(brand), HttpStatus.CREATED);
     }
+
     //@Operation(summary = "Update Brand by ID", description = "Update the Brand in DB")
     @PutMapping(value = "{id}")
     @Secured("ROLE_ADMIN")
@@ -71,6 +67,15 @@ public class BrandController {
         return new ResponseEntity<>(BrandDTO.from(editedBrand), HttpStatus.OK);
 
     }
+
+    //@Operation(summary = "Delete Brand by ID", description = "Delete the Brand from ID in DB")
+    @DeleteMapping(value = "{id}")
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity<BrandDTO> deleteBrand(@PathVariable final Long id) {
+        Brand brand = brandService.deleteBrand(id);
+        return new ResponseEntity<>(BrandDTO.from(brand), HttpStatus.OK);
+    }
+
 
 
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -28,8 +29,7 @@ public class BrandServiceImpl implements BrandService {
     }
 
     public List<Brand> getBrands() {
-        return StreamSupport
-                .stream(brandRepository.findAll().spliterator(), false).collect(Collectors.toList());
+        return new ArrayList<>(brandRepository.findAll());
     }
 
     public Brand getBrand(Long id) {
