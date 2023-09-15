@@ -60,6 +60,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(HttpMethod.GET, "/brand/**").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/category/**").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, "/item/**").permitAll();
                     auth.requestMatchers("/auth/**").permitAll();
                     auth.requestMatchers("/admin/**").hasRole("ADMIN");
                     auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER");

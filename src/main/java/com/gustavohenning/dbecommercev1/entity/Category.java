@@ -1,6 +1,6 @@
 package com.gustavohenning.dbecommercev1.entity;
 
-import com.gustavohenning.dbecommercev1.entity.dto.CategoryDto;
+import com.gustavohenning.dbecommercev1.entity.dto.CategoryDTO;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -20,6 +20,7 @@ public class Category {
 
     private String name;
 
+//TODO
 //    @ManyToMany(mappedBy = "categories")
 //    private List<Item> items;
 
@@ -32,7 +33,7 @@ public class Category {
     private LocalDateTime updatedDate;
 
 
-    public static Category from(CategoryDto categoryDto) {
+    public static Category from(CategoryDTO categoryDto) {
         Category category = new Category();
         category.setName(categoryDto.getName());
         category.setCreatedDate(categoryDto.getCreatedDate());
