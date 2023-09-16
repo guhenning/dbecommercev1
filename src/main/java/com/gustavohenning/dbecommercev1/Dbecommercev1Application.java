@@ -1,9 +1,12 @@
 package com.gustavohenning.dbecommercev1;
 
 import com.gustavohenning.dbecommercev1.entity.ApplicationUser;
+import com.gustavohenning.dbecommercev1.entity.Cart;
 import com.gustavohenning.dbecommercev1.entity.Role;
+import com.gustavohenning.dbecommercev1.repository.CartRepository;
 import com.gustavohenning.dbecommercev1.repository.RoleRepository;
 import com.gustavohenning.dbecommercev1.repository.UserRepository;
+import com.gustavohenning.dbecommercev1.service.CartService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

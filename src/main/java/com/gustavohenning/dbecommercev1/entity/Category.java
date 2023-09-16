@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -20,9 +21,9 @@ public class Category {
 
     private String name;
 
-//TODO
-//    @ManyToMany(mappedBy = "categories")
-//    private List<Item> items;
+
+   @ManyToMany(mappedBy = "categories")
+    private List<Item> items;
 
 
     @Column(updatable = false)

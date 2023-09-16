@@ -2,11 +2,14 @@ package com.gustavohenning.dbecommercev1.service.impl;
 
 import com.google.gson.*;
 import com.gustavohenning.dbecommercev1.entity.ApplicationUser;
+import com.gustavohenning.dbecommercev1.entity.Cart;
 import com.gustavohenning.dbecommercev1.entity.Role;
 import com.gustavohenning.dbecommercev1.entity.dto.LoginResponseDTO;
+import com.gustavohenning.dbecommercev1.repository.CartRepository;
 import com.gustavohenning.dbecommercev1.repository.RoleRepository;
 import com.gustavohenning.dbecommercev1.repository.UserRepository;
 import com.gustavohenning.dbecommercev1.service.AuthenticationService;
+import com.gustavohenning.dbecommercev1.service.CartService;
 import com.gustavohenning.dbecommercev1.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -40,10 +40,6 @@ public class ItemServiceImpl implements ItemService {
 
         addedItem.setCategories(categories);
 
-
-
-
-
         return itemRepository.save(addedItem);
     }
 

@@ -33,9 +33,9 @@ public class Item {
     @UpdateTimestamp
     private LocalDateTime updatedDate;
 
-// TODO
-//    @OneToMany(mappedBy = "item")
-//    private List<CartItem> cartItems;
+
+   @OneToMany(mappedBy = "item")
+    private List<CartItem> cartItems;
 
 
     @ManyToMany(fetch = FetchType.EAGER)
