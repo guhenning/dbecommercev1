@@ -29,7 +29,7 @@ public class CartDto {
     private LocalDateTime updatedDate;
 
 
-    private CartUserDto userId;
+    private Long userId;
 
 
 
@@ -38,7 +38,7 @@ public class CartDto {
         cartDto.setId(cart.getId());
         CartUserDto userDto = new CartUserDto();
         userDto.setId(cart.getUserId().getUserId());
-        cartDto.setUserId(userDto);
+        cartDto.setUserId(userDto.getId());
         List<CartItemDto> cartItemDtos = cart.getCartItems().stream()
                 .map(CartItemDto::from)
                 .collect(Collectors.toList());

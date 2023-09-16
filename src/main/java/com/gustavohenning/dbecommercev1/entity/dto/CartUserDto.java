@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class CartUserDto {
     private Long id;
-    private Long userId;
+    private UserDto userId;
 }
