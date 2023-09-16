@@ -30,6 +30,7 @@ public class Cart {
     @OneToOne(fetch = FetchType.LAZY,
             cascade =  CascadeType.MERGE,
             mappedBy = "cart")
+    @JoinColumn(name = "user_id")
     private ApplicationUser userId;
 
 

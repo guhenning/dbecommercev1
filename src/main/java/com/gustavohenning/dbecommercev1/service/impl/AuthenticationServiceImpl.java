@@ -5,6 +5,7 @@ import com.gustavohenning.dbecommercev1.entity.ApplicationUser;
 import com.gustavohenning.dbecommercev1.entity.Cart;
 import com.gustavohenning.dbecommercev1.entity.Role;
 import com.gustavohenning.dbecommercev1.entity.dto.LoginResponseDTO;
+import com.gustavohenning.dbecommercev1.entity.dto.UserDto;
 import com.gustavohenning.dbecommercev1.repository.CartRepository;
 import com.gustavohenning.dbecommercev1.repository.RoleRepository;
 import com.gustavohenning.dbecommercev1.repository.UserRepository;
@@ -147,20 +148,34 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
 
-    public LoginResponseDTO loginUser(String username, String password){
-
-        try{
+    public LoginResponseDTO loginUser(String username, String password) {
+        try {
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
             );
 
             String token = tokenService.generateJwt(auth);
 
-            return new LoginResponseDTO(userRepository.findByUsername(username).get(), token);
+            ApplicationUser user = userRepository.findByUsername(username).orElse(null);
+            UserDto userDTO = mapUserToUserDTO(user);
 
-        } catch(AuthenticationException e){
+            return new LoginResponseDTO(userDTO, token);
+        } catch (AuthenticationException e) {
             return new LoginResponseDTO(null, "");
         }
     }
+
+    private UserDto mapUserToUserDTO(ApplicationUser user) {
+        if (user == null) {
+            return null;
+        }
+
+        UserDto userDTO = new UserDto();
+        userDTO.setUserId(user.getUserId());
+        userDTO.setUsername(user.getUsername());
+
+        return userDTO;
+    }
+
 
 }
