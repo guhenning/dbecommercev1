@@ -1,5 +1,6 @@
 package com.gustavohenning.dbecommercev1.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gustavohenning.dbecommercev1.entity.dto.CartDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

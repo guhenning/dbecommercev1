@@ -25,8 +25,6 @@ public class CartItem {
     @JoinColumn(name = "item_id")
     private Item item;
 
-
-
     private int itemQuantity;
 
     @Column(updatable = false)
@@ -38,7 +36,6 @@ public class CartItem {
 
     @ManyToOne
     private Cart cart;
-
 
     public static CartItem from(CartItemDto cartItemDto) {
         CartItem cartItem = new CartItem();
@@ -53,6 +50,4 @@ public class CartItem {
 
         return cartItem;
     }
-
-
 }

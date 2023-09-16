@@ -31,8 +31,6 @@ public class CartDto {
 
     private Long userId;
 
-
-
     public static CartDto from(Cart cart) {
         CartDto cartDto = new CartDto();
         cartDto.setId(cart.getId());
