@@ -26,13 +26,12 @@ public class Cart {
     private Long id;
 
 
-// TODO
-//    @OneToOne(fetch = FetchType.LAZY,
-//            cascade =  CascadeType.ALL,
-//            mappedBy = "cart")
-//    private ApplicationUser user;
 
-    private Long userId;
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade =  CascadeType.MERGE,
+            mappedBy = "cart")
+    private ApplicationUser userId;
+
 
     @CreationTimestamp
     private LocalDateTime createdDate;

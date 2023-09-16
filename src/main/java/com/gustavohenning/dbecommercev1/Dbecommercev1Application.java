@@ -24,7 +24,7 @@ public class Dbecommercev1Application {
 	}
 
 	@Bean
-	CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncode){
+	CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncode, CartService cartService, CartRepository cartRepository){
 		return args ->{
 			if(roleRepository.findByAuthority("ADMIN").isPresent()) return;
 			Role adminRole = roleRepository.save(new Role("ADMIN"));
@@ -32,8 +32,15 @@ public class Dbecommercev1Application {
 
 			Set<Role> roles = new HashSet<>();
 			roles.add(adminRole);
+			Cart cart = new Cart();
 
-			ApplicationUser admin = new ApplicationUser(1L, "admin", passwordEncode.encode("password"), "null", "null", "null", "null", "null", "null", "null", roles);
+			ApplicationUser admin = new ApplicationUser(1L, "admin", passwordEncode.encode("password"), "null", "null", "null", "null", "null", "null", "null", roles, cart);
+
+			cartService.addCart(cart, admin);
+			admin.setCart(cart);
+			cart.setUserId(admin.getCart().getUserId());
+			cartRepository.save(cart);
+
 
 			userRepository.save(admin);
 		};

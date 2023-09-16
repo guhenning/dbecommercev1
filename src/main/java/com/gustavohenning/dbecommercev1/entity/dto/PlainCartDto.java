@@ -1,6 +1,7 @@
 package com.gustavohenning.dbecommercev1.entity.dto;
 
 
+import com.gustavohenning.dbecommercev1.entity.ApplicationUser;
 import com.gustavohenning.dbecommercev1.entity.Cart;
 import lombok.Data;
 
@@ -8,7 +9,7 @@ import lombok.Data;
 public class PlainCartDto {
 
     private Long id;
-    private Long userId;
+    private ApplicationUser userId;
 
     public static PlainCartDto from(Cart cart) {
         PlainCartDto plainCartDto = new PlainCartDto();

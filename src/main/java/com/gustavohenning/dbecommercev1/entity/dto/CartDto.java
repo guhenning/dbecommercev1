@@ -1,5 +1,6 @@
 package com.gustavohenning.dbecommercev1.entity.dto;
 
+import com.gustavohenning.dbecommercev1.entity.ApplicationUser;
 import com.gustavohenning.dbecommercev1.entity.Cart;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -28,7 +29,7 @@ public class CartDto {
     private LocalDateTime updatedDate;
 
 
-    private Long userId;
+    private ApplicationUser userId;
 
 
 

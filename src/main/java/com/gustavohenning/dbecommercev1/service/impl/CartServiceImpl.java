@@ -24,12 +24,12 @@ public class CartServiceImpl implements CartService {
         this.cartRepository = cartRepository;
     }
 
- //   TODO
-//    public Cart addCart(Cart cart, ApplicationUser user) {
-//        cart.setUser(user); // Associate the cart with user
-//        user.setCart(cart);
-//        return cartRepository.save(cart);
-//    }
+
+    public Cart addCart(Cart cart, ApplicationUser user) {
+        cart.setUserId(user.getCart().getUserId()); // Associate the cart with user
+        user.setCart(cart);
+        return cartRepository.save(cart);
+    }
 
     public List<Cart> getCarts() {
         return new ArrayList<>(cartRepository.findAll());

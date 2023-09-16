@@ -40,6 +40,12 @@ public class ApplicationUser implements UserDetails {
     private Set<Role> authorities;
 
 
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
+
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.authorities;
@@ -64,5 +70,6 @@ public class ApplicationUser implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 
 }
