@@ -12,7 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/cart/{cartId}/cartItems")
+@RequestMapping("/cart/{cartId}/cartItem")
+@CrossOrigin("*")
 public class CartItemController {
 
     private final CartItemService cartItemService;

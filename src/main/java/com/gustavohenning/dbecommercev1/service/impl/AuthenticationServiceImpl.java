@@ -171,7 +171,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         UserDto userDTO = new UserDto();
-        userDTO.setUserId(user.getUserId());
         userDTO.setUsername(user.getUsername());
 
         return userDTO;
