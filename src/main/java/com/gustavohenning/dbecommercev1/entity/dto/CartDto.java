@@ -29,14 +29,16 @@ public class CartDto {
     private LocalDateTime updatedDate;
 
 
-    private ApplicationUser userId;
+    private CartUserDto userId;
 
 
 
     public static CartDto from(Cart cart) {
         CartDto cartDto = new CartDto();
         cartDto.setId(cart.getId());
-        cartDto.setUserId(cart.getUserId());
+        CartUserDto userDto = new CartUserDto();
+        userDto.setId(cart.getUserId().getUserId());
+        cartDto.setUserId(userDto);
         List<CartItemDto> cartItemDtos = cart.getCartItems().stream()
                 .map(CartItemDto::from)
                 .collect(Collectors.toList());

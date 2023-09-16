@@ -55,7 +55,9 @@ public class Cart {
 
     public static Cart from(CartDto cartDto) {
         Cart cart = new Cart();
-        cart.setUserId(cartDto.getUserId());
+        ApplicationUser user = new ApplicationUser();
+        user.setUserId(cartDto.getUserId().getUserId());
+        cart.setUserId(user);
         cart.setCreatedDate(cartDto.getCreatedDate());
         cart.setUpdatedDate(cartDto.getUpdatedDate());
         return cart;
