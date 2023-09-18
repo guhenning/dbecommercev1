@@ -1,5 +1,6 @@
 package com.gustavohenning.dbecommercev1.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gustavohenning.dbecommercev1.entity.dto.CartItemDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -35,6 +36,7 @@ public class CartItem {
     private LocalDateTime updatedDate;
 
     @ManyToOne
+    @JsonIgnore
     private Cart cart;
 
     public static CartItem from(CartItemDto cartItemDto) {

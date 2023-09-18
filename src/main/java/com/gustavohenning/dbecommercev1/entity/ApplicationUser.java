@@ -1,5 +1,6 @@
 package com.gustavohenning.dbecommercev1.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -42,6 +43,7 @@ public class ApplicationUser implements UserDetails {
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "cart_id")
+    @JsonIgnore
     private Cart cart;
 
 

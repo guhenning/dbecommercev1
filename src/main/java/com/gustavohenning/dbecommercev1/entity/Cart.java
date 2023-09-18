@@ -32,6 +32,7 @@ public class Cart {
             cascade =  CascadeType.MERGE,
             mappedBy = "cart")
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private ApplicationUser userId;
 
 
@@ -57,7 +58,7 @@ public class Cart {
     public static Cart from(CartDto cartDto) {
         Cart cart = new Cart();
         ApplicationUser user = new ApplicationUser();
-        user.setUserId(cartDto.getUserId());
+        user.setUserId(cartDto.getCartWithUserDto().getUserId());
         cart.setUserId(user);
         cart.setCreatedDate(cartDto.getCreatedDate());
         cart.setUpdatedDate(cartDto.getUpdatedDate());

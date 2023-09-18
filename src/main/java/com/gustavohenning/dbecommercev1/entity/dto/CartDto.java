@@ -1,6 +1,5 @@
 package com.gustavohenning.dbecommercev1.entity.dto;
 
-import com.gustavohenning.dbecommercev1.entity.ApplicationUser;
 import com.gustavohenning.dbecommercev1.entity.Cart;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -8,7 +7,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +15,7 @@ public class CartDto {
 
     private Long id;
 
-    List<CartItemDto> cartItemsDto = new ArrayList<>();
+    private CartWithUserDto cartWithUserDto;
 
     private double totalPrice;
     private double discountedPrice;
@@ -28,41 +26,40 @@ public class CartDto {
     @UpdateTimestamp
     private LocalDateTime updatedDate;
 
-
-    private Long userId;
-
     public static CartDto from(Cart cart) {
         CartDto cartDto = new CartDto();
         cartDto.setId(cart.getId());
-        CartUserDto userDto = new CartUserDto();
-        userDto.setId(cart.getUserId().getUserId());
-        cartDto.setUserId(userDto.getId());
+
+        CartWithUserDto cartWithUserDto = new CartWithUserDto();
+        cartWithUserDto.setCartId(cart.getId());
+        cartWithUserDto.setUserId(cart.getUserId().getUserId());
+
         List<CartItemDto> cartItemDtos = cart.getCartItems().stream()
                 .map(CartItemDto::from)
                 .collect(Collectors.toList());
-        cartDto.setCartItemsDto(cartItemDtos);
 
-        cartDto.setCreatedDate(cart.getCreatedDate());
-        cartDto.setUpdatedDate(cart.getUpdatedDate());
+        cartWithUserDto.setCartItems(cartItemDtos);
+        cartDto.setCartWithUserDto(cartWithUserDto);
 
-
-
+        // Calculate total prices
         double totalSalePrice = cartItemDtos.stream()
-                .mapToDouble(cartItemDto -> cartItemDto.getItemSalePrice() * cartItemDto.getItemQuantity())
+                .mapToDouble(CartItemDto::getItemTotalPrice)
                 .sum();
 
         double totalDiscountedPrice = cartItemDtos.stream()
-                .mapToDouble(cartItemDto -> (cartItemDto.getItemSalePrice() - cartItemDto.getItemSalePrice() * cartItemDto.getItemDiscount()) * cartItemDto.getItemQuantity())
+                .mapToDouble(CartItemDto::getItemDiscountedPrice)
                 .sum();
 
-
-        // Format totalSalePrice to two decimal
+        // Format totalSalePrice and totalDiscountedPrice to two decimal places
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
         double formattedTotalPrice = Double.parseDouble(decimalFormat.format(totalSalePrice));
         double formattedDiscountedPrice = Double.parseDouble(decimalFormat.format(totalDiscountedPrice));
 
         cartDto.setTotalPrice(formattedTotalPrice);
         cartDto.setDiscountedPrice(formattedDiscountedPrice);
+
+        cartDto.setCreatedDate(cart.getCreatedDate());
+        cartDto.setUpdatedDate(cart.getUpdatedDate());
 
         return cartDto;
     }
