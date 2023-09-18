@@ -4,6 +4,7 @@ import com.gustavohenning.dbecommercev1.entity.Item;
 import com.gustavohenning.dbecommercev1.entity.dto.ItemDto;
 import com.gustavohenning.dbecommercev1.repository.ItemRepository;
 import com.gustavohenning.dbecommercev1.service.ItemService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class ItemController {
     }
 
 
-   // @Operation(summary = "Get All Items", description = "Get All Items in DB")
+    @Operation(summary = "Get All Items", description = "Get All Items in DB")
     @GetMapping
     public ResponseEntity<List<ItemDto>> getItems() {
         List<Item> items = itemService.getItems();
@@ -36,14 +37,14 @@ public class ItemController {
         return new ResponseEntity<>(itemsDto, HttpStatus.OK);
     }
 
-    //@Operation(summary = "Get Item By ID", description = "Get Item from ID in DB")
+    @Operation(summary = "Get Item By ID", description = "Get Item from ID in DB")
     @GetMapping(value = "{id}")
     public ResponseEntity<ItemDto> getItem(@PathVariable final Long id) {
         Item item = itemService.getItem(id);
         return new ResponseEntity<>(ItemDto.from(item), HttpStatus.OK);
     }
 
-    //@Operation(summary = "Get Items By Name", description = "Get Items By Name or Partial Name")
+    @Operation(summary = "Get Items By Name", description = "Get Items By Name or Partial Name")
     @GetMapping("/name/{name}")
     public ResponseEntity<List<ItemDto>> searchItemsByName(@PathVariable String name) {
         List<Item> items = (List<Item>) itemRepository.findByNameContainingIgnoreCase(name);
@@ -51,7 +52,7 @@ public class ItemController {
         return new ResponseEntity<>(itemDtos, HttpStatus.OK);
     }
 
-    //@Operation(summary = "Get Items By Keyword", description = "Get Items By Keyword in name or shortDescription or longDescription")
+    @Operation(summary = "Get Items By Keyword", description = "Get Items By Keyword in name or shortDescription or longDescription")
     @GetMapping("/search")
     public ResponseEntity<List<ItemDto>> searchItemsByKeyword(@RequestParam String keyword) {
         List<Item> items = (List<Item>) itemRepository.findByKeywordIgnoreCase(keyword);
@@ -60,14 +61,14 @@ public class ItemController {
     }
 
 
-   // @Operation(summary = "Get Items By Category", description = "Get Items By Category")
+    @Operation(summary = "Get Items By Category", description = "Get Items By Category")
     @GetMapping("/category")
     public ResponseEntity<List<ItemDto>> getItemsByCategory(@RequestParam List<Long> categoryIds) {
         List<Item> items = itemService.getItemsByCategoryIds(categoryIds);
         List<ItemDto> itemDtos = items.stream().map(ItemDto::from).collect(Collectors.toList());
         return new ResponseEntity<>(itemDtos, HttpStatus.OK);
     }
-    //@Operation(summary = "Get Items By Brand", description = "Get Items By Brand")
+    @Operation(summary = "Get Items By Brand", description = "Get Items By Brand")
     @GetMapping("/brand/{brandId}")
     public ResponseEntity<List<ItemDto>> getItemsByBrand(@PathVariable Long brandId) {
         List<Item> items = itemService.getItemsByBrandId(brandId);
@@ -75,7 +76,7 @@ public class ItemController {
         return new ResponseEntity<>(itemDtos, HttpStatus.OK);
     }
 
-    //@Operation(summary = "Add New Item", description = "Add a new Item to DB")
+    @Operation(summary = "Add New Item", description = "Add a new Item to DB")
     @PostMapping
     @Secured("ROLE_ADMIN")
     public ResponseEntity<ItemDto> addItem(@RequestBody final ItemDto itemDto) {
@@ -88,7 +89,7 @@ public class ItemController {
 
 
 
-    //@Operation(summary = "Update Item by ID", description = "Update the Item in DB")
+    @Operation(summary = "Update Item by ID", description = "Update the Item in DB")
     @PutMapping(value = "{id}")
     @Secured("ROLE_ADMIN")
     public ResponseEntity<ItemDto> editItem(@PathVariable final Long id, @RequestBody final ItemDto itemDto) {
@@ -97,7 +98,7 @@ public class ItemController {
 
     }
 
-    // @Operation(summary = "Delete Item by ID", description = "Delete the Item from ID in DB")
+    @Operation(summary = "Delete Item by ID", description = "Delete the Item from ID in DB")
     @DeleteMapping(value = "{id}")
     @Secured("ROLE_ADMIN")
     public ResponseEntity<ItemDto> deleteItem(@PathVariable final Long id) {
