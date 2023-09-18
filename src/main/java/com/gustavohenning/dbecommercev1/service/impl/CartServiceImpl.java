@@ -26,7 +26,7 @@ public class CartServiceImpl implements CartService {
 
 
     public Cart addCart(Cart cart, ApplicationUser user) {
-        cart.setUserId(user.getCart().getUserId()); // Associate the cart with user
+        cart.setUserId(user.getUserId()); // Associate the cart with user
         user.setCart(cart);
         return cartRepository.save(cart);
     }

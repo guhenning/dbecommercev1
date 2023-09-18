@@ -8,10 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 public class LoginResponseDTO {
 
-
     private UserDto user;
     private String jwt;
-
-
-
 }

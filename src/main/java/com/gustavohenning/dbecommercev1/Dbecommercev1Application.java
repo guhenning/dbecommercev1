@@ -38,7 +38,7 @@ public class Dbecommercev1Application {
 
 			cartService.addCart(cart, admin);
 			admin.setCart(cart);
-			cart.setUserId(admin.getCart().getUserId());
+			cart.setUserId(admin.getUserId());
 			cartRepository.save(cart);
 
 

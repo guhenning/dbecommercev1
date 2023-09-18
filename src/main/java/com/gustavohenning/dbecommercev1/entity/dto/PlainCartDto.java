@@ -9,12 +9,12 @@ import lombok.Data;
 public class PlainCartDto {
 
     private Long id;
-    private ApplicationUser userId;
+    private Long userId;
 
     public static PlainCartDto from(Cart cart) {
         PlainCartDto plainCartDto = new PlainCartDto();
         plainCartDto.setId(cart.getId());
-        plainCartDto.setUserId(cart.getUserId());
+        plainCartDto.setUserId(cart.getUser().getUserId());
         return plainCartDto;
     }
 }

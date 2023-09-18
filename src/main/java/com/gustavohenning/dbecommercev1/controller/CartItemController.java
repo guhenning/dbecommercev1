@@ -24,6 +24,7 @@ public class CartItemController {
     }
 
     //@Operation(summary = "Get CartItem By ID", description = "Get the Cart Item from ID")
+    //Todo fix all carts getting this itemId
     @GetMapping(value = "{id}")
     public ResponseEntity<CartItemDto> getCartItem(@PathVariable final Long id) {
         CartItem cartItem = cartItemService.getCartItem(id);

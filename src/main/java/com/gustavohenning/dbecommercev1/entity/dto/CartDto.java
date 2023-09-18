@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,7 +16,7 @@ public class CartDto {
 
     private Long id;
 
-    private CartWithUserDto cartWithUserDto;
+    List<CartItemDto> cartItemsDto = new ArrayList<>();
 
     private double totalPrice;
     private double discountedPrice;
@@ -26,40 +27,41 @@ public class CartDto {
     @UpdateTimestamp
     private LocalDateTime updatedDate;
 
+
+    private Long userId;
+
+
+
     public static CartDto from(Cart cart) {
         CartDto cartDto = new CartDto();
         cartDto.setId(cart.getId());
-
-        CartWithUserDto cartWithUserDto = new CartWithUserDto();
-        cartWithUserDto.setCartId(cart.getId());
-        cartWithUserDto.setUserId(cart.getUserId().getUserId());
-
+        cartDto.setUserId(cart.getUser().getUserId());
         List<CartItemDto> cartItemDtos = cart.getCartItems().stream()
                 .map(CartItemDto::from)
                 .collect(Collectors.toList());
+        cartDto.setCartItemsDto(cartItemDtos);
 
-        cartWithUserDto.setCartItems(cartItemDtos);
-        cartDto.setCartWithUserDto(cartWithUserDto);
+        cartDto.setCreatedDate(cart.getCreatedDate());
+        cartDto.setUpdatedDate(cart.getUpdatedDate());
 
-        // Calculate total prices
+
+
         double totalSalePrice = cartItemDtos.stream()
-                .mapToDouble(CartItemDto::getItemTotalPrice)
+                .mapToDouble(cartItemDto -> cartItemDto.getItemSalePrice() * cartItemDto.getItemQuantity())
                 .sum();
 
         double totalDiscountedPrice = cartItemDtos.stream()
-                .mapToDouble(CartItemDto::getItemDiscountedPrice)
+                .mapToDouble(cartItemDto -> (cartItemDto.getItemSalePrice() - cartItemDto.getItemSalePrice() * cartItemDto.getItemDiscount()) * cartItemDto.getItemQuantity())
                 .sum();
 
-        // Format totalSalePrice and totalDiscountedPrice to two decimal places
+
+        // Format totalSalePrice to two decimal
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
         double formattedTotalPrice = Double.parseDouble(decimalFormat.format(totalSalePrice));
         double formattedDiscountedPrice = Double.parseDouble(decimalFormat.format(totalDiscountedPrice));
 
         cartDto.setTotalPrice(formattedTotalPrice);
         cartDto.setDiscountedPrice(formattedDiscountedPrice);
-
-        cartDto.setCreatedDate(cart.getCreatedDate());
-        cartDto.setUpdatedDate(cart.getUpdatedDate());
 
         return cartDto;
     }

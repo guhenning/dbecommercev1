@@ -8,8 +8,8 @@ import java.util.List;
 
 @Data
 public class CartWithUserDto {
-    private Long cartId;
-    private Long userId;
-
-    private List<CartItemDto> cartItems;
+//    private Long cartId;
+//    private Long userId;
+//
+//    private List<CartItemDto> cartItems;
 }
