@@ -32,7 +32,6 @@ public class Cart {
             cascade =  CascadeType.MERGE,
             mappedBy = "cart")
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     private ApplicationUser userId;
 
 

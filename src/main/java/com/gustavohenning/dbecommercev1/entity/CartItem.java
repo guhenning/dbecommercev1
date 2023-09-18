@@ -36,7 +36,6 @@ public class CartItem {
     private LocalDateTime updatedDate;
 
     @ManyToOne
-    @JsonIgnore
     private Cart cart;
 
     public static CartItem from(CartItemDto cartItemDto) {
