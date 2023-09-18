@@ -54,7 +54,7 @@ public class ItemController {
     //@Operation(summary = "Get Items By Keyword", description = "Get Items By Keyword in name or shortDescription or longDescription")
     @GetMapping("/search")
     public ResponseEntity<List<ItemDto>> searchItemsByKeyword(@RequestParam String keyword) {
-        List<Item> items = (List<Item>) itemRepository.findByNameContainingIgnoreCaseOrShortDescriptionContainingIgnoreCaseOrLongDescriptionContainingIgnoreCase(keyword, keyword, keyword);
+        List<Item> items = (List<Item>) itemRepository.findByKeywordIgnoreCase(keyword);
         List<ItemDto> itemDtos = items.stream().map(ItemDto::from).collect(Collectors.toList());
         return new ResponseEntity<>(itemDtos, HttpStatus.OK);
     }

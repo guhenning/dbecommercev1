@@ -13,7 +13,4 @@ public interface CartService {
 
     Cart getCart(Long id);
 
-    Cart deleteCart(Long id);
-
-    Cart editCart(Long id, Cart cart);
 }

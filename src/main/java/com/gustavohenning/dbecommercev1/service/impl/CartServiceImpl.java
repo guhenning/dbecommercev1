@@ -40,17 +40,4 @@ public class CartServiceImpl implements CartService {
                 new CartNotFoundException(id));
     }
 
-    public Cart deleteCart(Long id) {
-        Cart cart = getCart(id);
-        cartRepository.delete(cart);
-        return cart;
-    }
-
-    @Transactional
-    public Cart editCart(Long id, Cart cart) {
-        Cart cartToEdit = getCart(id);
-        cartToEdit.setUserId(cart.getUserId());
-        return cartToEdit;
-    }
-
 }

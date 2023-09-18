@@ -11,7 +11,7 @@ public interface ItemService {
     List<Item> getItems();
 
     Item getItem(Long id);
-    List<Item> findByNameContainingIgnoreCaseOrShortDescriptionContainingIgnoreCaseOrLongDescriptionContainingIgnoreCase(String nameKeyword, String shortDescKeyword, String longDescKeyword);
+    List<Item> findByKeywordIgnoreCase(String keyword);
 
     List<Item> getItemsByCategoryIds(List<Long> categoryIds);
 

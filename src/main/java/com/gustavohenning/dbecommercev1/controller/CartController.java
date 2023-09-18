@@ -6,6 +6,7 @@ import com.gustavohenning.dbecommercev1.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class CartController {
 
     //@Operation(summary = "Get All Carts", description = "Get All Carts in DB")
     @GetMapping
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<List<CartDto>> getCarts() {
         List<Cart> carts = cartService.getCarts();
         List<CartDto> cartsDto = carts.stream().map(CartDto::from).collect(Collectors.toList());

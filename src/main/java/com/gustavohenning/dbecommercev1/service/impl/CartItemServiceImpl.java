@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class CartItemServiceImpl implements CartItemService {
@@ -32,15 +30,6 @@ public class CartItemServiceImpl implements CartItemService {
         this.cartService = cartService;
         this.itemService = itemService;
         this.cartRepository = cartRepository;
-    }
-
-    //TODO check if necessary
-    public CartItem addCartItem(CartItem cartItem) {
-        return cartItemRepository.save(cartItem);
-    }
-
-    public List<CartItem> getCartItems() {
-        return new ArrayList<>(cartItemRepository.findAll());
     }
 
     public CartItem getCartItem(Long id) {
