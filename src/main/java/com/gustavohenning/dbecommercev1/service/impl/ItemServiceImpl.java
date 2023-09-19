@@ -40,10 +40,6 @@ public class ItemServiceImpl implements ItemService {
 
         addedItem.setCategories(categories);
 
-
-
-
-
         return itemRepository.save(addedItem);
     }
 
@@ -63,13 +59,9 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.findByBrandId(brandId);
     }
 
-    public List<Item> findByNameContainingIgnoreCaseOrShortDescriptionContainingIgnoreCaseOrLongDescriptionContainingIgnoreCase(String nameKeyword, String shortDescKeyword, String longDescKeyword) {
-        return itemRepository.findByNameContainingIgnoreCaseOrShortDescriptionContainingIgnoreCaseOrLongDescriptionContainingIgnoreCase(nameKeyword, shortDescKeyword, longDescKeyword);
+    public List<Item> findByKeywordIgnoreCase(String keyword) {
+        return itemRepository.findByKeywordIgnoreCase(keyword);
     }
-
-
-
-
 
     public Item deleteItem(Long id) {
         Item item = getItem(id);
@@ -112,6 +104,7 @@ public class ItemServiceImpl implements ItemService {
             itemToEdit.setBrand(item.getBrand());
         }
 
+        //TODO fix editing categories
         if (item.getCategories() != null){
             itemToEdit.setCategories(item.getCategories());
         }

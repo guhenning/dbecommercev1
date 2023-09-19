@@ -2,11 +2,15 @@ package com.gustavohenning.dbecommercev1.service.impl;
 
 import com.google.gson.*;
 import com.gustavohenning.dbecommercev1.entity.ApplicationUser;
+import com.gustavohenning.dbecommercev1.entity.Cart;
 import com.gustavohenning.dbecommercev1.entity.Role;
 import com.gustavohenning.dbecommercev1.entity.dto.LoginResponseDTO;
+import com.gustavohenning.dbecommercev1.entity.dto.UserDto;
+import com.gustavohenning.dbecommercev1.repository.CartRepository;
 import com.gustavohenning.dbecommercev1.repository.RoleRepository;
 import com.gustavohenning.dbecommercev1.repository.UserRepository;
 import com.gustavohenning.dbecommercev1.service.AuthenticationService;
+import com.gustavohenning.dbecommercev1.service.CartService;
 import com.gustavohenning.dbecommercev1.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -47,6 +51,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private CartService cartService;
+
+    @Autowired CartRepository cartRepository;
+
     public ApplicationUser registerUser(String username, String password, String name, String email, String postalCode, String state, String city, String neighborhood, String street) throws Exception {
 
         String encodedPassword = passwordEncoder.encode(password);
@@ -56,7 +65,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         authorities.add(userRole);
 
-        ApplicationUser userWithAddress = new ApplicationUser(0L, username, encodedPassword, name, email, postalCode, state, city, neighborhood, street, authorities);
+        Cart cart = new Cart();
+
+        ApplicationUser userWithAddress = new ApplicationUser(0L, username, encodedPassword, name, email, postalCode, state, city, neighborhood, street, authorities, cart);
+        userWithAddress.setCart(cart);
+        cartService.addCart(cart, userWithAddress);
         getAddress(userWithAddress);
 
         try {
@@ -135,20 +148,34 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
 
-    public LoginResponseDTO loginUser(String username, String password){
-
-        try{
+    public LoginResponseDTO loginUser(String username, String password) {
+        try {
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
             );
 
             String token = tokenService.generateJwt(auth);
 
-            return new LoginResponseDTO(userRepository.findByUsername(username).get(), token);
+            ApplicationUser user = userRepository.findByUsername(username).orElse(null);
+            UserDto userDTO = mapUserToUserDTO(user);
 
-        } catch(AuthenticationException e){
+            return new LoginResponseDTO(userDTO, token);
+        } catch (AuthenticationException e) {
             return new LoginResponseDTO(null, "");
         }
     }
+
+    private UserDto mapUserToUserDTO(ApplicationUser user) {
+        if (user == null) {
+            return null;
+        }
+
+        UserDto userDTO = new UserDto();
+        userDTO.setUsername(user.getUsername());
+        userDTO.setUserId(user.getUserId());
+
+        return userDTO;
+    }
+
 
 }

@@ -7,9 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginResponseDTO {
-    private ApplicationUser user;
+
+    private UserDto user;
     private String jwt;
-
-
-
 }
