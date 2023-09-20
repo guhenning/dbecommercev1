@@ -20,11 +20,10 @@ import java.util.stream.Collectors;
 public class CategoryController {
 
     private final CategoryService categoryService;
-    private final CategoryRepository categoryRepository;
 
     @Autowired
-    public CategoryController(CategoryService categoryService, CategoryRepository categoryRepository) {this.categoryService = categoryService;
-        this.categoryRepository = categoryRepository;
+    public CategoryController(CategoryService categoryService) {this.categoryService = categoryService;
+
     }
 
     @Operation(summary = "Get All Categories", description = "Get All Categories in DB")
@@ -43,7 +42,7 @@ public class CategoryController {
     @Operation(summary = "Get Categories By Name", description = "Get Categories By Name or Partial Name")
     @GetMapping("/name/{name}")
     public ResponseEntity<List<CategoryDTO>> searchCategoriesByName(@PathVariable String name) {
-        List<Category> categories = (List<Category>) categoryRepository.findByNameContainingIgnoreCase(name);
+        List<Category> categories = (List<Category>) categoryService.findByNameContainingIgnoreCase(name);
         List<CategoryDTO> categoryDtos = categories.stream().map(CategoryDTO::from).collect(Collectors.toList());
         return new ResponseEntity<>(categoryDtos, HttpStatus.OK);
     }

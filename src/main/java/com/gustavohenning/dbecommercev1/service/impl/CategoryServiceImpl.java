@@ -31,6 +31,10 @@ public class CategoryServiceImpl implements CategoryService {
         return new ArrayList<>(categoryRepository.findAll());
     }
 
+    public Iterable<Category> findByNameContainingIgnoreCase(String name) {
+        return categoryRepository.findByNameContainingIgnoreCase(name);
+    }
+
     public Category getCategory(Long id) {
         return categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
     }

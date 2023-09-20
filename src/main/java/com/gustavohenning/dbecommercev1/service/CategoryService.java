@@ -10,6 +10,8 @@ public interface CategoryService {
 
     List<Category> getCategories();
 
+    Iterable<Category> findByNameContainingIgnoreCase(String name);
+
     Category getCategory(Long id);
 
     Category deleteCategory(Long id);

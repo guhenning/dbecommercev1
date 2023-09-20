@@ -20,11 +20,9 @@ import java.util.stream.Collectors;
 public class BrandController {
 
     private final BrandService brandService;
-    private final BrandRepository brandRepository;
 
     @Autowired
-    public BrandController(BrandService brandService, BrandRepository brandRepository) {this.brandService = brandService;
-        this.brandRepository = brandRepository;
+    public BrandController(BrandService brandService) {this.brandService = brandService;
     }
 
 
@@ -47,7 +45,7 @@ public class BrandController {
     @Operation(summary = "Get Brands By Name", description = "Get Brands By Name or Partial Name")
     @GetMapping("/name/{name}")
     public ResponseEntity<List<BrandDTO>> searchBrandsByName(@PathVariable String name) {
-        List<Brand> brands = (List<Brand>) brandRepository.findByNameContainingIgnoreCase(name);
+        List<Brand> brands = (List<Brand>) brandService.findByNameContainingIgnoreCase(name);
         List<BrandDTO> brandDtos = brands.stream().map(BrandDTO::from).collect(Collectors.toList());
         return new ResponseEntity<>(brandDtos, HttpStatus.OK);
     }

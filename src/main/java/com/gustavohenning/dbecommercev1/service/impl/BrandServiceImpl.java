@@ -6,6 +6,7 @@ import com.gustavohenning.dbecommercev1.repository.BrandRepository;
 import com.gustavohenning.dbecommercev1.service.BrandService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,6 +32,10 @@ public class BrandServiceImpl implements BrandService {
     public List<Brand> getBrands() {
         return new ArrayList<>(brandRepository.findAll());
     }
+
+    public Iterable<Brand> findByNameContainingIgnoreCase(String name) {
+        return brandRepository.findByNameContainingIgnoreCase(name);
+    };
 
     public Brand getBrand(Long id) {
         return brandRepository.findById(id).orElseThrow(() -> new BrandNotFoundException(id));
