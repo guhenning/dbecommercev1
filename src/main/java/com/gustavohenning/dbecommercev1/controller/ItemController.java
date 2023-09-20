@@ -2,7 +2,6 @@ package com.gustavohenning.dbecommercev1.controller;
 
 import com.gustavohenning.dbecommercev1.entity.Item;
 import com.gustavohenning.dbecommercev1.entity.dto.ItemDto;
-import com.gustavohenning.dbecommercev1.repository.ItemRepository;
 import com.gustavohenning.dbecommercev1.service.ItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +19,10 @@ import java.util.stream.Collectors;
 public class ItemController {
 
     private final ItemService itemService;
-    private final ItemRepository itemRepository;
 
     @Autowired
-    public ItemController(ItemService itemService, ItemRepository itemRepository) {
+    public ItemController(ItemService itemService) {
         this.itemService = itemService;
-        this.itemRepository = itemRepository;
     }
 
 
@@ -47,7 +44,7 @@ public class ItemController {
     @Operation(summary = "Get Items By Name", description = "Get Items By Name or Partial Name")
     @GetMapping("/name/{name}")
     public ResponseEntity<List<ItemDto>> searchItemsByName(@PathVariable String name) {
-        List<Item> items = (List<Item>) itemRepository.findByNameContainingIgnoreCase(name);
+        List<Item> items = (List<Item>) itemService.findByNameContainingIgnoreCase(name);
         List<ItemDto> itemDtos = items.stream().map(ItemDto::from).collect(Collectors.toList());
         return new ResponseEntity<>(itemDtos, HttpStatus.OK);
     }
@@ -55,7 +52,7 @@ public class ItemController {
     @Operation(summary = "Get Items By Keyword", description = "Get Items By Keyword in name or shortDescription or longDescription")
     @GetMapping("/search")
     public ResponseEntity<List<ItemDto>> searchItemsByKeyword(@RequestParam String keyword) {
-        List<Item> items = (List<Item>) itemRepository.findByKeywordIgnoreCase(keyword);
+        List<Item> items = (List<Item>) itemService.findByKeywordIgnoreCase(keyword);
         List<ItemDto> itemDtos = items.stream().map(ItemDto::from).collect(Collectors.toList());
         return new ResponseEntity<>(itemDtos, HttpStatus.OK);
     }

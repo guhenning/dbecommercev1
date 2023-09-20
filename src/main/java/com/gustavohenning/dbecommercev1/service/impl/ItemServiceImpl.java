@@ -52,16 +52,23 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.findById(id).orElseThrow( () -> new ItemNotFoundException(id));
     }
 
-    public List<Item> getItemsByCategoryIds(List<Long> categoryIds) {
-        return itemRepository.findByCategoriesIdIn(categoryIds);
-    }
-    public List<Item> getItemsByBrandId(Long brandId) {
-        return itemRepository.findByBrandId(brandId);
-    }
+    public List<Item> findByNameContainingIgnoreCase(String name) { return itemRepository.findByNameContainingIgnoreCase(name);}
 
     public List<Item> findByKeywordIgnoreCase(String keyword) {
         return itemRepository.findByKeywordIgnoreCase(keyword);
     }
+
+    public List<Item> getItemsByCategoryIds(List<Long> categoryIds) {
+        return itemRepository.findByCategoriesIdIn(categoryIds);
+    }
+
+    public List<Item> getItemsByBrandId(Long brandId) {
+        return itemRepository.findByBrandId(brandId);
+    }
+
+
+
+
 
     public Item deleteItem(Long id) {
         Item item = getItem(id);
