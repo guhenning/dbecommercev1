@@ -26,8 +26,6 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-
-
     @OneToOne(fetch = FetchType.LAZY,
             cascade =  CascadeType.MERGE,
             mappedBy = "cart")
@@ -36,6 +34,10 @@ public class Cart {
 
     private Long userId;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cart_id")
+    private List<CartItem> cartItems = new ArrayList<>();
+
 
     @CreationTimestamp
     private LocalDateTime createdDate;
@@ -43,9 +45,6 @@ public class Cart {
     @UpdateTimestamp
     private LocalDateTime updatedDate;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "cart_id")
-    private List<CartItem> cartItems = new ArrayList<>();
 
     public void addCartItem(CartItem cartItem) {
         cartItems.add(cartItem);

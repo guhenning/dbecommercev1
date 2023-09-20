@@ -24,12 +24,18 @@ public class ApplicationUser implements UserDetails {
     private String username;
     private String password;
     private String name;
-    private String email;
+    private String surname;
+    private String document;
     private String postalCode;
     private String state;
     private String city;
     private String neighborhood;
     private String street;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "cart_id")
+    @JsonIgnore
+    private Cart cart;
 
 
     @ManyToMany(fetch=FetchType.EAGER)
@@ -41,10 +47,7 @@ public class ApplicationUser implements UserDetails {
     private Set<Role> authorities;
 
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    @JoinColumn(name = "cart_id")
-    @JsonIgnore
-    private Cart cart;
+
 
 
 

@@ -25,16 +25,8 @@ public class Item {
     private double salePrice;
     private double costPrice;
     private double discount;
-    @Column(updatable = false)
 
-    @CreationTimestamp
-    private LocalDateTime createdDate;
-
-    @UpdateTimestamp
-    private LocalDateTime updatedDate;
-
-
-   @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item")
     private List<CartItem> cartItems;
 
 
@@ -45,6 +37,16 @@ public class Item {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "brand_id")
     private Brand brand;
+
+    @Column(updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdDate;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedDate;
+
+
+
 
 
 
