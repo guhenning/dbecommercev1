@@ -56,7 +56,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Autowired CartRepository cartRepository;
 
-    public ApplicationUser registerUser(String username, String password, String name, String email, String postalCode, String state, String city, String neighborhood, String street) throws Exception {
+    public ApplicationUser registerUser(String username, String password, String name, String surname, String document, String postalCode, String state, String city, String neighborhood, String street) throws Exception {
 
         String encodedPassword = passwordEncoder.encode(password);
         Role userRole = roleRepository.findByAuthority("USER").get();
@@ -67,7 +67,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         Cart cart = new Cart();
 
-        ApplicationUser userWithAddress = new ApplicationUser(0L, username, encodedPassword, name, email, postalCode, state, city, neighborhood, street, authorities, cart);
+        ApplicationUser userWithAddress = new ApplicationUser(0L, username, encodedPassword, name, surname, document, postalCode, state, city, neighborhood, street, cart, authorities);
         userWithAddress.setCart(cart);
         cartService.addCart(cart, userWithAddress);
         getAddress(userWithAddress);

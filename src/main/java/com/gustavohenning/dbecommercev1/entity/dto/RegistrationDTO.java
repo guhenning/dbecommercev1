@@ -14,7 +14,8 @@ public class RegistrationDTO {
     private String username;
     private String password;
     private String name;
-    private String email;
+    private String surname;
+    private String document;
     private String postalCode;
     private String state;
     private String city;
@@ -25,7 +26,8 @@ public class RegistrationDTO {
         return "Registration info: username: " + this.username +
                 " password: " + this.password +
                 " name: " + this.name +
-                " email: " + this.email +
+                " surname: " + this.surname +
+                " document: " + this.document +
                 " postalCode: " + this.postalCode +
                 " state: " + this.state +
                 " city: " + this.city +

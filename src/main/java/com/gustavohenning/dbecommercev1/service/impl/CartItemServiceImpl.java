@@ -1,5 +1,6 @@
 package com.gustavohenning.dbecommercev1.service.impl;
 
+import com.gustavohenning.dbecommercev1.entity.ApplicationUser;
 import com.gustavohenning.dbecommercev1.entity.Cart;
 import com.gustavohenning.dbecommercev1.entity.CartItem;
 import com.gustavohenning.dbecommercev1.entity.Item;

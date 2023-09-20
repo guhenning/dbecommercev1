@@ -34,7 +34,7 @@ public class Dbecommercev1Application {
 			roles.add(adminRole);
 			Cart cart = new Cart();
 
-			ApplicationUser admin = new ApplicationUser(1L, "admin", passwordEncode.encode("password"), "null", "null", "null", "null", "null", "null", "null", roles, cart);
+			ApplicationUser admin = new ApplicationUser(1L, "admin@hotmail.com", passwordEncode.encode("password"), "null", "null", "null", "null", "null", "null", "null", "null", cart, roles);
 
 			cartService.addCart(cart, admin);
 			admin.setCart(cart);

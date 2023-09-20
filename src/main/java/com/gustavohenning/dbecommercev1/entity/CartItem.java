@@ -28,6 +28,9 @@ public class CartItem {
 
     private int itemQuantity;
 
+    @ManyToOne
+    private Cart cart;
+
     @Column(updatable = false)
     @CreationTimestamp
     private LocalDateTime createdDate;
@@ -35,8 +38,7 @@ public class CartItem {
     @UpdateTimestamp
     private LocalDateTime updatedDate;
 
-    @ManyToOne
-    private Cart cart;
+
 
     public static CartItem from(CartItemDto cartItemDto) {
         CartItem cartItem = new CartItem();
