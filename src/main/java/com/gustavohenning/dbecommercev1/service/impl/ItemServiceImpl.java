@@ -73,16 +73,16 @@ public class ItemServiceImpl implements ItemService {
     public Page<Item> getItemsOrderedBySalesPrice(boolean ascending, String keyword, Pageable pageable) {
         Sort.Direction sortDirection = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
         return ascending
-                ? itemRepository.findByOrderBySalePriceAsc(keyword, pageable)
-                : itemRepository.findByOrderBySalePriceDesc(keyword, pageable);
+                ? itemRepository.findByKeywordOrderBySalePriceAsc(keyword, pageable)
+                : itemRepository.findByKeywordOrderBySalePriceDesc(keyword, pageable);
     }
 
     public Page<Item> getItemsOrderedByRecentUpdatedDate(String keyword, Pageable pageable) {
-        return itemRepository.findByOrderByUpdatedDateDesc(keyword, pageable);
+        return itemRepository.findByKeywordOrderByUpdatedDateDesc(keyword, pageable);
     }
 
     public Page<Item> getItemsOrderedByBiggerDiscount(String keyword, Pageable pageable) {
-        return itemRepository.findByOrderByDiscountDesc(keyword, pageable);
+        return itemRepository.findByKeywordOrderByDiscountDesc(keyword, pageable);
     }
 
     public List<Item> getItemsByCategoryIds(List<Long> categoryIds) {

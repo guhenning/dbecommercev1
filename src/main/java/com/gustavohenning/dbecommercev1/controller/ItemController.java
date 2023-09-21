@@ -69,7 +69,7 @@ public class ItemController {
         return new ResponseEntity<>(itemDtos, HttpStatus.OK);
     }
 
-    @Operation(summary = "Get Items By Keyword Ordered by Price with Pagination", description = "Get Items By Keyword Ordered by Price with Pagination")
+    @Operation(summary = "Get Items By Keyword Ordered by Price with Pagination", description = "Get Items By Keyword Ordered by Price with Pagination true = ASC false = DESC")
     @GetMapping("/search/{keyword}/byprice/{ascending}/{page}/{pageSize}")
     public ResponseEntity<Page<ItemDto>> searchItemsByKeywordOrderedByPrice(
             @PathVariable String keyword,
@@ -84,6 +84,20 @@ public class ItemController {
         Page<ItemDto> itemDtos = itemsPage.map(ItemDto::from);
         return new ResponseEntity<>(itemDtos, HttpStatus.OK);
     }
+    @Operation(summary = "Get Items By Keyword Ordered by UpdateDate with Pagination", description = "Get Items By Keyword Ordered by UpdateDate with Pagination")
+    @GetMapping("/search/{keyword}/new/{page}/{pageSize}")
+    public ResponseEntity<Page<ItemDto>> searchItemsByKeywordOrderedByPrice(
+            @PathVariable String keyword,
+            @PathVariable int page,
+            @PathVariable int pageSize
+    ) {
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "updatedDate"));
+        Page<Item> itemsPage = itemService.getItemsOrderedByRecentUpdatedDate(keyword, pageable);
+
+        Page<ItemDto> itemDtos = itemsPage.map(ItemDto::from);
+        return new ResponseEntity<>(itemDtos, HttpStatus.OK);
+    }
+
 
 
 

@@ -20,16 +20,16 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     Page<Item> findByKeywordIgnoreCaseWithPagination(String keyword, Pageable pageable);
 
     @Query("SELECT i FROM Item i WHERE LOWER(i.name) LIKE %:keyword% OR LOWER(i.shortDescription) LIKE %:keyword% OR LOWER(i.longDescription) LIKE %:keyword%")
-    Page<Item> findByOrderBySalePriceAsc(String keyword, Pageable pageable);
+    Page<Item> findByKeywordOrderBySalePriceAsc(String keyword, Pageable pageable);
 
     @Query("SELECT i FROM Item i WHERE LOWER(i.name) LIKE %:keyword% OR LOWER(i.shortDescription) LIKE %:keyword% OR LOWER(i.longDescription) LIKE %:keyword%")
-    Page<Item> findByOrderBySalePriceDesc(String keyword, Pageable pageable);
+    Page<Item> findByKeywordOrderBySalePriceDesc(String keyword, Pageable pageable);
 
     @Query("SELECT i FROM Item i WHERE LOWER(i.name) LIKE %:keyword% OR LOWER(i.shortDescription) LIKE %:keyword% OR LOWER(i.longDescription) LIKE %:keyword%")
-    Page<Item> findByOrderByUpdatedDateDesc(String keyword, Pageable pageable);
+    Page<Item> findByKeywordOrderByUpdatedDateDesc(String keyword, Pageable pageable);
 
     @Query("SELECT i FROM Item i WHERE LOWER(i.name) LIKE %:keyword% OR LOWER(i.shortDescription) LIKE %:keyword% OR LOWER(i.longDescription) LIKE %:keyword%")
-    Page<Item> findByOrderByDiscountDesc(String keyword, Pageable pageable);
+    Page<Item> findByKeywordOrderByDiscountDesc(String keyword, Pageable pageable);
 
     List<Item> findByCategoriesIdIn(List<Long> categoryIds);
 
