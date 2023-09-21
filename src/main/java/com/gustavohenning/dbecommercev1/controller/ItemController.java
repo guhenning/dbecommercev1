@@ -45,14 +45,6 @@ public class ItemController {
         return new ResponseEntity<>(ItemDto.from(item), HttpStatus.OK);
     }
 
-    @Operation(summary = "Get Items By Name", description = "Get Items By Name or Partial Name")
-    @GetMapping("/name/{name}")
-    public ResponseEntity<List<ItemDto>> searchItemsByName(@PathVariable String name) {
-        List<Item> items = (List<Item>) itemService.findByNameContainingIgnoreCase(name);
-        List<ItemDto> itemDtos = items.stream().map(ItemDto::from).collect(Collectors.toList());
-        return new ResponseEntity<>(itemDtos, HttpStatus.OK);
-    }
-
     @Operation(summary = "Get Items By Keyword", description = "Get Items By Keyword in name or shortDescription or longDescription")
     @GetMapping("/searchitems")
     @Secured("ROLE_ADMIN")
@@ -62,7 +54,7 @@ public class ItemController {
         return new ResponseEntity<>(itemDtos, HttpStatus.OK);
     }
 
-    @Operation(summary = "Get Items By Keyword with Pagination", description = "Get Items By Keyword in name or shortDescription or longDescription with Pagination default Page = 0 default items = 10")
+    @Operation(summary = "Get Items By Keyword with Pagination", description = "Get Items By Keyword in name or shortDescription or longDescription with Pagination")
     @GetMapping("/search/{keyword}/{page}/{pageSize}")
     public ResponseEntity<Page<ItemDto>> searchItemsByKeyword(
             @PathVariable String keyword,

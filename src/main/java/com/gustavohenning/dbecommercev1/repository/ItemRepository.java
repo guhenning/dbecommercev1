@@ -13,8 +13,6 @@ import java.util.List;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    List<Item> findByNameContainingIgnoreCase(String name);
-
     @Query("SELECT i FROM Item i WHERE LOWER(i.name) LIKE %:keyword% OR LOWER(i.shortDescription) LIKE %:keyword% OR LOWER(i.longDescription) LIKE %:keyword%")
     List<Item> findByKeywordIgnoreCase(String keyword);
 

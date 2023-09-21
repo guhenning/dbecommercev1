@@ -46,7 +46,6 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.save(addedItem);
     }
 
-
     public List<Item> getItems() {
         return new ArrayList<>(itemRepository.findAll());
     }
@@ -54,9 +53,6 @@ public class ItemServiceImpl implements ItemService {
     public Item getItem(Long id) {
         return itemRepository.findById(id).orElseThrow( () -> new ItemNotFoundException(id));
     }
-
-    public List<Item> findByNameContainingIgnoreCase(String name) { return itemRepository.findByNameContainingIgnoreCase(name);}
-
     public List<Item> findByKeywordIgnoreCase(String keyword) {
         return itemRepository.findByKeywordIgnoreCase(keyword);
     }
@@ -72,10 +68,6 @@ public class ItemServiceImpl implements ItemService {
     public List<Item> getItemsByBrandId(Long brandId) {
         return itemRepository.findByBrandId(brandId);
     }
-
-
-
-
 
     public Item deleteItem(Long id) {
         Item item = getItem(id);
