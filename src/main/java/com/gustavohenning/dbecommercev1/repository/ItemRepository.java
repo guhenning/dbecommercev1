@@ -19,6 +19,18 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("SELECT i FROM Item i WHERE LOWER(i.name) LIKE %:keyword% OR LOWER(i.shortDescription) LIKE %:keyword% OR LOWER(i.longDescription) LIKE %:keyword%")
     Page<Item> findByKeywordIgnoreCaseWithPagination(String keyword, Pageable pageable);
 
+    @Query("SELECT i FROM Item i WHERE LOWER(i.name) LIKE %:keyword% OR LOWER(i.shortDescription) LIKE %:keyword% OR LOWER(i.longDescription) LIKE %:keyword%")
+    Page<Item> findByOrderBySalePriceAsc(String keyword, Pageable pageable);
+
+    @Query("SELECT i FROM Item i WHERE LOWER(i.name) LIKE %:keyword% OR LOWER(i.shortDescription) LIKE %:keyword% OR LOWER(i.longDescription) LIKE %:keyword%")
+    Page<Item> findByOrderBySalePriceDesc(String keyword, Pageable pageable);
+
+    @Query("SELECT i FROM Item i WHERE LOWER(i.name) LIKE %:keyword% OR LOWER(i.shortDescription) LIKE %:keyword% OR LOWER(i.longDescription) LIKE %:keyword%")
+    Page<Item> findByOrderByUpdatedDateDesc(String keyword, Pageable pageable);
+
+    @Query("SELECT i FROM Item i WHERE LOWER(i.name) LIKE %:keyword% OR LOWER(i.shortDescription) LIKE %:keyword% OR LOWER(i.longDescription) LIKE %:keyword%")
+    Page<Item> findByOrderByDiscountDesc(String keyword, Pageable pageable);
+
     List<Item> findByCategoriesIdIn(List<Long> categoryIds);
 
     List<Item> findByBrandId(Long brandId);

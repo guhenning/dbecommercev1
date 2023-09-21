@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -67,6 +68,21 @@ public class ItemServiceImpl implements ItemService {
 
     public Page<Item> findByKeywordIgnoreCaseWithPagination(String keyword, Pageable pageable) {
         return itemRepository.findByKeywordIgnoreCaseWithPagination(keyword, pageable);
+    }
+
+    public Page<Item> getItemsOrderedBySalesPrice(boolean ascending, String keyword, Pageable pageable) {
+        Sort.Direction sortDirection = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
+        return ascending
+                ? itemRepository.findByOrderBySalePriceAsc(keyword, pageable)
+                : itemRepository.findByOrderBySalePriceDesc(keyword, pageable);
+    }
+
+    public Page<Item> getItemsOrderedByRecentUpdatedDate(String keyword, Pageable pageable) {
+        return itemRepository.findByOrderByUpdatedDateDesc(keyword, pageable);
+    }
+
+    public Page<Item> getItemsOrderedByBiggerDiscount(String keyword, Pageable pageable) {
+        return itemRepository.findByOrderByDiscountDesc(keyword, pageable);
     }
 
     public List<Item> getItemsByCategoryIds(List<Long> categoryIds) {

@@ -18,6 +18,12 @@ public interface ItemService {
 
     Page<Item> findByKeywordIgnoreCaseWithPagination(String keyword, Pageable pageable);
 
+    Page<Item> getItemsOrderedBySalesPrice(boolean ascending, String keyword, Pageable pageable);
+
+    Page<Item> getItemsOrderedByRecentUpdatedDate(String keyword, Pageable pageable);
+
+    Page<Item> getItemsOrderedByBiggerDiscount(String keyword, Pageable pageable);
+
     List<Item> getItemsByCategoryIds(List<Long> categoryIds);
 
     List<Item> getItemsByBrandId(Long brandId);

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -67,6 +68,24 @@ public class ItemController {
         Page<ItemDto> itemDtos = itemsPage.map(ItemDto::from);
         return new ResponseEntity<>(itemDtos, HttpStatus.OK);
     }
+
+    @Operation(summary = "Get Items By Keyword Ordered by Price with Pagination", description = "Get Items By Keyword Ordered by Price with Pagination")
+    @GetMapping("/search/{keyword}/byprice/{ascending}/{page}/{pageSize}")
+    public ResponseEntity<Page<ItemDto>> searchItemsByKeywordOrderedByPrice(
+            @PathVariable String keyword,
+            @PathVariable boolean ascending,
+            @PathVariable int page,
+            @PathVariable int pageSize
+    ) {
+        Sort.Direction sortDirection = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(sortDirection, "salePrice"));
+        Page<Item> itemsPage = itemService.getItemsOrderedBySalesPrice(ascending, keyword, pageable);
+
+        Page<ItemDto> itemDtos = itemsPage.map(ItemDto::from);
+        return new ResponseEntity<>(itemDtos, HttpStatus.OK);
+    }
+
+
 
 
     @Operation(summary = "Get Items By Category", description = "Get Items By Category")
