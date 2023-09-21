@@ -11,6 +11,9 @@ import com.gustavohenning.dbecommercev1.repository.ItemRepository;
 import com.gustavohenning.dbecommercev1.service.ItemService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -56,6 +59,10 @@ public class ItemServiceImpl implements ItemService {
 
     public List<Item> findByKeywordIgnoreCase(String keyword) {
         return itemRepository.findByKeywordIgnoreCase(keyword);
+    }
+
+    public Page<Item> findByKeywordIgnoreCaseWithPagination(String keyword, Pageable pageable) {
+        return itemRepository.findByKeywordIgnoreCaseWithPagination(keyword, pageable);
     }
 
     public List<Item> getItemsByCategoryIds(List<Long> categoryIds) {

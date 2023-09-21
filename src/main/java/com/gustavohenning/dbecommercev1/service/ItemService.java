@@ -1,6 +1,8 @@
 package com.gustavohenning.dbecommercev1.service;
 
 import com.gustavohenning.dbecommercev1.entity.Item;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -13,6 +15,8 @@ public interface ItemService {
     Item getItem(Long id);
     List<Item> findByNameContainingIgnoreCase(String name);
     List<Item> findByKeywordIgnoreCase(String keyword);
+
+    Page<Item> findByKeywordIgnoreCaseWithPagination(String keyword, Pageable pageable);
 
     List<Item> getItemsByCategoryIds(List<Long> categoryIds);
 

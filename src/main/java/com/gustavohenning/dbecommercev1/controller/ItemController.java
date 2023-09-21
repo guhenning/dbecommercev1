@@ -5,6 +5,9 @@ import com.gustavohenning.dbecommercev1.entity.dto.ItemDto;
 import com.gustavohenning.dbecommercev1.service.ItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -28,6 +31,7 @@ public class ItemController {
 
     @Operation(summary = "Get All Items", description = "Get All Items in DB")
     @GetMapping
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<List<ItemDto>> getItems() {
         List<Item> items = itemService.getItems();
         List<ItemDto> itemsDto = items.stream().map(ItemDto::from).collect(Collectors.toList());
@@ -50,10 +54,25 @@ public class ItemController {
     }
 
     @Operation(summary = "Get Items By Keyword", description = "Get Items By Keyword in name or shortDescription or longDescription")
-    @GetMapping("/search")
+    @GetMapping("/searchitems")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<List<ItemDto>> searchItemsByKeyword(@RequestParam String keyword) {
         List<Item> items = (List<Item>) itemService.findByKeywordIgnoreCase(keyword);
         List<ItemDto> itemDtos = items.stream().map(ItemDto::from).collect(Collectors.toList());
+        return new ResponseEntity<>(itemDtos, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get Items By Keyword with Pagination", description = "Get Items By Keyword in name or shortDescription or longDescription with Pagination default Page = 0 default items = 10")
+    @GetMapping("/search/{keyword}/{page}/{pageSize}")
+    public ResponseEntity<Page<ItemDto>> searchItemsByKeyword(
+            @PathVariable String keyword,
+            @PathVariable int page,
+            @PathVariable int pageSize
+    ) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Item> itemsPage = itemService.findByKeywordIgnoreCaseWithPagination(keyword, pageable);
+
+        Page<ItemDto> itemDtos = itemsPage.map(ItemDto::from);
         return new ResponseEntity<>(itemDtos, HttpStatus.OK);
     }
 
