@@ -2,10 +2,13 @@ package com.gustavohenning.dbecommercev1.controller;
 
 import com.gustavohenning.dbecommercev1.entity.Item;
 import com.gustavohenning.dbecommercev1.entity.dto.ItemDto;
-import com.gustavohenning.dbecommercev1.repository.ItemRepository;
 import com.gustavohenning.dbecommercev1.service.ItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -20,17 +23,16 @@ import java.util.stream.Collectors;
 public class ItemController {
 
     private final ItemService itemService;
-    private final ItemRepository itemRepository;
 
     @Autowired
-    public ItemController(ItemService itemService, ItemRepository itemRepository) {
+    public ItemController(ItemService itemService) {
         this.itemService = itemService;
-        this.itemRepository = itemRepository;
     }
 
 
     @Operation(summary = "Get All Items", description = "Get All Items in DB")
     @GetMapping
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<List<ItemDto>> getItems() {
         List<Item> items = itemService.getItems();
         List<ItemDto> itemsDto = items.stream().map(ItemDto::from).collect(Collectors.toList());
@@ -44,21 +46,60 @@ public class ItemController {
         return new ResponseEntity<>(ItemDto.from(item), HttpStatus.OK);
     }
 
-    @Operation(summary = "Get Items By Name", description = "Get Items By Name or Partial Name")
-    @GetMapping("/name/{name}")
-    public ResponseEntity<List<ItemDto>> searchItemsByName(@PathVariable String name) {
-        List<Item> items = (List<Item>) itemRepository.findByNameContainingIgnoreCase(name);
+    @Operation(summary = "Get Items By Keyword", description = "Get Items By Keyword in name or shortDescription or longDescription")
+    @GetMapping("/searchitems")
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity<List<ItemDto>> searchItemsByKeyword(@RequestParam String keyword) {
+        List<Item> items = (List<Item>) itemService.findByKeywordIgnoreCase(keyword);
         List<ItemDto> itemDtos = items.stream().map(ItemDto::from).collect(Collectors.toList());
         return new ResponseEntity<>(itemDtos, HttpStatus.OK);
     }
 
-    @Operation(summary = "Get Items By Keyword", description = "Get Items By Keyword in name or shortDescription or longDescription")
-    @GetMapping("/search")
-    public ResponseEntity<List<ItemDto>> searchItemsByKeyword(@RequestParam String keyword) {
-        List<Item> items = (List<Item>) itemRepository.findByKeywordIgnoreCase(keyword);
-        List<ItemDto> itemDtos = items.stream().map(ItemDto::from).collect(Collectors.toList());
+    @Operation(summary = "Get Items By Keyword with Pagination", description = "Get Items By Keyword in name or shortDescription or longDescription with Pagination")
+    @GetMapping("/search/{keyword}/{page}/{pageSize}")
+    public ResponseEntity<Page<ItemDto>> searchItemsByKeyword(
+            @PathVariable String keyword,
+            @PathVariable int page,
+            @PathVariable int pageSize
+    ) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Item> itemsPage = itemService.findByKeywordIgnoreCaseWithPagination(keyword, pageable);
+
+        Page<ItemDto> itemDtos = itemsPage.map(ItemDto::from);
         return new ResponseEntity<>(itemDtos, HttpStatus.OK);
     }
+
+    @Operation(summary = "Get Items By Keyword Ordered by Price with Pagination", description = "Get Items By Keyword Ordered by Price with Pagination true = ASC false = DESC")
+    @GetMapping("/search/{keyword}/byprice/{ascending}/{page}/{pageSize}")
+    public ResponseEntity<Page<ItemDto>> searchItemsByKeywordOrderedByPrice(
+            @PathVariable String keyword,
+            @PathVariable boolean ascending,
+            @PathVariable int page,
+            @PathVariable int pageSize
+    ) {
+        Sort.Direction sortDirection = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(sortDirection, "salePrice"));
+        Page<Item> itemsPage = itemService.getItemsOrderedBySalesPrice(ascending, keyword, pageable);
+
+        Page<ItemDto> itemDtos = itemsPage.map(ItemDto::from);
+        return new ResponseEntity<>(itemDtos, HttpStatus.OK);
+    }
+    @Operation(summary = "Get Items By Keyword Ordered by UpdateDate with Pagination", description = "Get Items By Keyword Ordered by UpdateDate with Pagination")
+    @GetMapping("/search/{keyword}/new/{page}/{pageSize}")
+    public ResponseEntity<Page<ItemDto>> searchItemsByKeywordOrderedByPrice(
+            @PathVariable String keyword,
+            @PathVariable int page,
+            @PathVariable int pageSize
+    ) {
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "updatedDate"));
+        Page<Item> itemsPage = itemService.getItemsOrderedByRecentUpdatedDate(keyword, pageable);
+
+        Page<ItemDto> itemDtos = itemsPage.map(ItemDto::from);
+        return new ResponseEntity<>(itemDtos, HttpStatus.OK);
+    }
+
+
+
 
 
     @Operation(summary = "Get Items By Category", description = "Get Items By Category")

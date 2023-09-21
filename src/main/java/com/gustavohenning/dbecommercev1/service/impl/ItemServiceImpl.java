@@ -4,6 +4,7 @@ import com.gustavohenning.dbecommercev1.entity.Brand;
 import com.gustavohenning.dbecommercev1.entity.Category;
 import com.gustavohenning.dbecommercev1.entity.Item;
 import com.gustavohenning.dbecommercev1.entity.exception.BrandNotFoundException;
+import com.gustavohenning.dbecommercev1.entity.exception.CategoryNotFoundException;
 import com.gustavohenning.dbecommercev1.entity.exception.ItemNotFoundException;
 import com.gustavohenning.dbecommercev1.repository.BrandRepository;
 import com.gustavohenning.dbecommercev1.repository.CategoryRepository;
@@ -11,6 +12,10 @@ import com.gustavohenning.dbecommercev1.repository.ItemRepository;
 import com.gustavohenning.dbecommercev1.service.ItemService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,6 +34,7 @@ public class ItemServiceImpl implements ItemService {
         this.categoryRepository = categoryRepository;
         this.brandRepository = brandRepository;
     }
+
     @Transactional
     public Item addItem(Item item, List<Long> categoryIds, Long brandId) {
         Brand brand = brandRepository.findById(brandId).orElseThrow(() -> new BrandNotFoundException(brandId));
@@ -36,13 +42,18 @@ public class ItemServiceImpl implements ItemService {
 
         Item addedItem = itemRepository.save(item);
 
-        List<Category> categories = new ArrayList<>(categoryRepository.findAllById(categoryIds));
+        List<Category> categories = new ArrayList<>();
+
+        for (Long categoryId : categoryIds) {
+            Category category = categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new CategoryNotFoundException(categoryId));
+            categories.add(category);
+        }
 
         addedItem.setCategories(categories);
 
         return itemRepository.save(addedItem);
     }
-
 
     public List<Item> getItems() {
         return new ArrayList<>(itemRepository.findAll());
@@ -51,16 +62,35 @@ public class ItemServiceImpl implements ItemService {
     public Item getItem(Long id) {
         return itemRepository.findById(id).orElseThrow( () -> new ItemNotFoundException(id));
     }
+    public List<Item> findByKeywordIgnoreCase(String keyword) {
+        return itemRepository.findByKeywordIgnoreCase(keyword);
+    }
+
+    public Page<Item> findByKeywordIgnoreCaseWithPagination(String keyword, Pageable pageable) {
+        return itemRepository.findByKeywordIgnoreCaseWithPagination(keyword, pageable);
+    }
+
+    public Page<Item> getItemsOrderedBySalesPrice(boolean ascending, String keyword, Pageable pageable) {
+        Sort.Direction sortDirection = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
+        return ascending
+                ? itemRepository.findByKeywordOrderBySalePriceAsc(keyword, pageable)
+                : itemRepository.findByKeywordOrderBySalePriceDesc(keyword, pageable);
+    }
+
+    public Page<Item> getItemsOrderedByRecentUpdatedDate(String keyword, Pageable pageable) {
+        return itemRepository.findByKeywordOrderByUpdatedDateDesc(keyword, pageable);
+    }
+
+    public Page<Item> getItemsOrderedByBiggerDiscount(String keyword, Pageable pageable) {
+        return itemRepository.findByKeywordOrderByDiscountDesc(keyword, pageable);
+    }
 
     public List<Item> getItemsByCategoryIds(List<Long> categoryIds) {
         return itemRepository.findByCategoriesIdIn(categoryIds);
     }
+
     public List<Item> getItemsByBrandId(Long brandId) {
         return itemRepository.findByBrandId(brandId);
-    }
-
-    public List<Item> findByKeywordIgnoreCase(String keyword) {
-        return itemRepository.findByKeywordIgnoreCase(keyword);
     }
 
     public Item deleteItem(Long id) {

@@ -6,6 +6,7 @@ import com.gustavohenning.dbecommercev1.entity.Cart;
 import com.gustavohenning.dbecommercev1.entity.Role;
 import com.gustavohenning.dbecommercev1.entity.dto.LoginResponseDTO;
 import com.gustavohenning.dbecommercev1.entity.dto.UserDto;
+import com.gustavohenning.dbecommercev1.entity.exception.UsernameAlreadyExistsException;
 import com.gustavohenning.dbecommercev1.repository.CartRepository;
 import com.gustavohenning.dbecommercev1.repository.RoleRepository;
 import com.gustavohenning.dbecommercev1.repository.UserRepository;
@@ -30,6 +31,7 @@ import java.net.URLConnection;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -57,6 +59,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired CartRepository cartRepository;
 
     public ApplicationUser registerUser(String username, String password, String name, String surname, String document, String postalCode, String state, String city, String neighborhood, String street) throws Exception {
+
+        Optional<ApplicationUser> existingUser = userRepository.findByUsername(username);
+
+        if(existingUser.isPresent()) {
+            throw new UsernameAlreadyExistsException(username);
+        }
 
         String encodedPassword = passwordEncoder.encode(password);
         Role userRole = roleRepository.findByAuthority("USER").get();
