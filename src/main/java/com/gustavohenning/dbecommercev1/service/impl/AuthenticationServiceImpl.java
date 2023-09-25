@@ -58,35 +58,37 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Autowired CartRepository cartRepository;
 
-    public ApplicationUser registerUser(String username, String password, String name, String surname, String document, String postalCode, String state, String city, String neighborhood, String street) throws Exception {
+    public Optional<ApplicationUser> registerUser(String username, String password, String name, String surname, String document, String postalCode, String state, String city, String neighborhood, String street) throws Exception {
 
-        Optional<ApplicationUser> existingUser = userRepository.findByUsername(username);
+                Optional<ApplicationUser> existingUser = userRepository.findByUsername(username);
 
-        if(existingUser.isPresent()) {
-            throw new UsernameAlreadyExistsException(username);
+                if(existingUser.isPresent()) {
+                    throw new UsernameAlreadyExistsException(username);
+                }
+
+                String encodedPassword = passwordEncoder.encode(password);
+                Role userRole = roleRepository.findByAuthority("USER").get();
+
+                Set<Role> authorities = new HashSet<>();
+
+                authorities.add(userRole);
+
+                Cart cart = new Cart();
+
+                ApplicationUser userWithAddress = new ApplicationUser(0L, username, encodedPassword, name, surname, document, postalCode, state, city, neighborhood, street, cart, authorities);
+                userWithAddress.setCart(cart);
+                cartService.addCart(cart, userWithAddress);
+                getAddress(userWithAddress);
+
+                try {
+                    getAddress(userWithAddress);
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalArgumentException("Invalid postal code");
         }
-
-        String encodedPassword = passwordEncoder.encode(password);
-        Role userRole = roleRepository.findByAuthority("USER").get();
-
-        Set<Role> authorities = new HashSet<>();
-
-        authorities.add(userRole);
-
-        Cart cart = new Cart();
-
-        ApplicationUser userWithAddress = new ApplicationUser(0L, username, encodedPassword, name, surname, document, postalCode, state, city, neighborhood, street, cart, authorities);
-        userWithAddress.setCart(cart);
-        cartService.addCart(cart, userWithAddress);
-        getAddress(userWithAddress);
-
-        try {
-            getAddress(userWithAddress);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid postal code");
-        }
-
-        return userRepository.save(userWithAddress);
+                userRepository.save(userWithAddress);
+                Long userId = userRepository.findByUsername(username).get().getUserId();
+                cart.setUserId(userId);
+        return userRepository.findByUsername(username);
     }
 
     public  ApplicationUser getAddress(ApplicationUser user) throws Exception {

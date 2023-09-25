@@ -128,8 +128,6 @@ public class ItemController {
         return new ResponseEntity<>(ItemDto.from(addedItem), HttpStatus.CREATED);
     }
 
-
-
     @Operation(summary = "Update Item by ID", description = "Update the Item in DB")
     @PutMapping(value = "{id}")
     @Secured("ROLE_ADMIN")

@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin("*")
@@ -18,7 +20,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     @Operation(summary = "Registry User", description = "Registry New User")
-    public ApplicationUser registerUser(@RequestBody RegistrationDTO body) throws Exception {
+    public Optional<ApplicationUser> registerUser(@RequestBody RegistrationDTO body) throws Exception {
         return authenticationService.registerUser(body.getUsername(), body.getPassword(), body.getName(), body.getSurname(), body.getDocument(), body.getPostalCode(), body.getState(), body.getCity(), body.getNeighborhood(), body.getStreet());
     }
 

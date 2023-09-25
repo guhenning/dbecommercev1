@@ -35,7 +35,7 @@ public class CartDto {
     public static CartDto from(Cart cart) {
         CartDto cartDto = new CartDto();
         cartDto.setId(cart.getId());
-        cartDto.setUserId(cart.getUser().getUserId());
+        cartDto.setUserId(cart.getUserId());
         List<CartItemDto> cartItemDtos = cart.getCartItems().stream()
                 .map(CartItemDto::from)
                 .collect(Collectors.toList());
