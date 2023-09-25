@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="com.gustavohenning.dbecommercev1" type="Application" factoryName="Application">
+    <envs>
+      <env name="DATABASE_URL" value="jdbc:postgresql://localhost:5432/dbecommercev1" />
+      <env name="DATABASE_USERNAME" value="postgres" />
+      <env name="DATABASE_PASSWORD" value="root" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="com.gustavohenning.dbecommercev1.Dbecommercev1Application" />
+    <module name="dbecommercev1" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
