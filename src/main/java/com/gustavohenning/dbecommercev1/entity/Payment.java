@@ -1,5 +1,7 @@
 package com.gustavohenning.dbecommercev1.entity;
 
+import com.gustavohenning.dbecommercev1.entity.dto.CategoryDTO;
+import com.gustavohenning.dbecommercev1.entity.dto.PaymentDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +24,7 @@ public class Payment {
     private PaymentStatus status;
 
     @OneToOne
-    private Cart cartId;
+    private Cart cart;
 
     private double itemsPrice;
 
@@ -40,5 +42,18 @@ public class Payment {
 
     @UpdateTimestamp
     private LocalDateTime updatedDate;
+
+
+    public static Payment from(PaymentDTO paymentDto) {
+        Payment payment = new Payment();
+        payment.setStatus(PaymentStatus.valueOf(paymentDto.getStatus()));
+        payment.setTotalPrice(paymentDto.getTotalPrice());
+        payment.setPaymentDate(paymentDto.getPaymentDate());
+        payment.setCreatedDate(paymentDto.getCreatedDate());
+        payment.setUpdatedDate(paymentDto.getUpdatedDate());
+        return payment;
+
+    }
+
 
 }
