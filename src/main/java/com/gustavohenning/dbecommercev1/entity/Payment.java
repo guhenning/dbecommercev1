@@ -1,6 +1,5 @@
 package com.gustavohenning.dbecommercev1.entity;
 
-import com.gustavohenning.dbecommercev1.entity.dto.CategoryDTO;
 import com.gustavohenning.dbecommercev1.entity.dto.PaymentDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,19 +10,23 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
-@Entity
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name="payment")
 public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "cart_id")
     private Cart cart;
 
     private double itemsPrice;
@@ -54,6 +57,5 @@ public class Payment {
         return payment;
 
     }
-
-
+    
 }

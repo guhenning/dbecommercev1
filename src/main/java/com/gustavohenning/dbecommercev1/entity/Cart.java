@@ -32,11 +32,17 @@ public class Cart {
     @JoinColumn(name = "user_id")
     private ApplicationUser user;
 
+
     private Long userId;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "cart_id")
     private List<CartItem> cartItems = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade =  CascadeType.MERGE,
+            mappedBy = "cart")
+    private Payment payment;
 
 
     @CreationTimestamp
