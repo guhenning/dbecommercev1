@@ -1,6 +1,5 @@
 package com.gustavohenning.dbecommercev1.service.impl;
 
-import com.gustavohenning.dbecommercev1.entity.ApplicationUser;
 import com.gustavohenning.dbecommercev1.entity.Cart;
 import com.gustavohenning.dbecommercev1.entity.CartItem;
 import com.gustavohenning.dbecommercev1.entity.Item;
@@ -9,8 +8,8 @@ import com.gustavohenning.dbecommercev1.entity.exception.CartItemNotFoundExcepti
 import com.gustavohenning.dbecommercev1.entity.exception.UserNotAuthorisedToSeeOrModifyCart;
 import com.gustavohenning.dbecommercev1.repository.CartItemRepository;
 import com.gustavohenning.dbecommercev1.repository.CartRepository;
-import com.gustavohenning.dbecommercev1.repository.UserRepository;
 import com.gustavohenning.dbecommercev1.service.CartItemService;
+import com.gustavohenning.dbecommercev1.util.CartOwner;
 import com.gustavohenning.dbecommercev1.util.ExtractUserFromToken;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,16 +27,16 @@ public class CartItemServiceImpl implements CartItemService {
     private final CartServiceImpl cartService;
     private final ItemServiceImpl itemService;
     private final CartRepository cartRepository;
-    private final UserRepository userRepository;
+    private final CartOwner cartOwner;
     private final ExtractUserFromToken extractUserFromToken;
 
     @Autowired
-    public CartItemServiceImpl(CartItemRepository cartItemRepository, CartServiceImpl cartService, ItemServiceImpl itemService, CartRepository cartRepository, UserRepository userRepository, ExtractUserFromToken extractUserFromToken) {
+    public CartItemServiceImpl(CartItemRepository cartItemRepository, CartServiceImpl cartService, ItemServiceImpl itemService, CartRepository cartRepository, CartOwner cartOwner, ExtractUserFromToken extractUserFromToken) {
         this.cartItemRepository = cartItemRepository;
         this.cartService = cartService;
         this.itemService = itemService;
         this.cartRepository = cartRepository;
-        this.userRepository = userRepository;
+        this.cartOwner = cartOwner;
         this.extractUserFromToken = extractUserFromToken;
     }
 
@@ -49,7 +48,7 @@ public class CartItemServiceImpl implements CartItemService {
     public Cart addCartItemToCart(Long cartId, CartItemDTO cartItemDto, @RequestHeader("Authorization") String token) {
         String userIdentifier = extractUserFromToken.extractUserIdentifier(token);
 
-        if (isCartOwner(cartId, userIdentifier)) {
+        if (cartOwner.isCartOwner(cartId, userIdentifier)) {
             Cart cart = cartService.getCart(cartId);
             CartItem cartItem = CartItem.from(cartItemDto);
             cartItem.setCart(cart);
@@ -85,7 +84,7 @@ public class CartItemServiceImpl implements CartItemService {
 
         Cart cart = cartService.getCart(cartId);
 
-        if (isCartOwner(cartId, userIdentifier)) {
+        if (cartOwner.isCartOwner(cartId, userIdentifier)) {
 
             Optional<CartItem> existingCartItem = cart.getCartItems().stream()
                     .filter(items -> items.getItem().getId().equals(cartItemId))
@@ -96,6 +95,7 @@ public class CartItemServiceImpl implements CartItemService {
                     existingCartItem.get().setItemQuantity(existingCartItem.get().getItemQuantity() - 1);
                 } else {
                     cart.removeCartItem(existingCartItem.get());
+                    cartItemRepository.delete(existingCartItem.get());
                 }
             } else throw new CartItemNotFoundException(cartItemId);
 
@@ -118,11 +118,4 @@ public class CartItemServiceImpl implements CartItemService {
         }
     }
 
-    @Transactional
-    public boolean isCartOwner(Long cartId, String username) {
-        Cart cart = cartService.getCart(cartId);
-        Optional<ApplicationUser> userOptional = userRepository.findByUsername(username);
-
-        return userOptional.isPresent() && cart.getUser().equals(userOptional.get());
-    }
 }

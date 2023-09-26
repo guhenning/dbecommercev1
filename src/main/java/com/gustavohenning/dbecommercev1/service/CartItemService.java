@@ -14,6 +14,4 @@ public interface CartItemService {
 
     void removeCartItemsAndDeleteFromCart(Long cartId);
 
-    boolean isCartOwner(Long cartId, String username);
-
 }
