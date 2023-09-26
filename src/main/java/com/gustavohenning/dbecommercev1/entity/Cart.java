@@ -61,6 +61,8 @@ public class Cart {
         cartItems.remove(cartItem);
     }
 
+   // TODO Remove line public void clearCartItems() { cartItems.clear();}
+
     public static Cart from(CartDto cartDto) {
         Cart cart = new Cart();
         cart.setUserId(cartDto.getUserId());

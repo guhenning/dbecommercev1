@@ -4,16 +4,15 @@ import com.gustavohenning.dbecommercev1.entity.Cart;
 import com.gustavohenning.dbecommercev1.entity.Payment;
 import com.gustavohenning.dbecommercev1.entity.PaymentStatus;
 import com.gustavohenning.dbecommercev1.entity.exception.CartNotFoundException;
-import com.gustavohenning.dbecommercev1.entity.exception.UserNotFoundException;
 import com.gustavohenning.dbecommercev1.repository.CartRepository;
 import com.gustavohenning.dbecommercev1.repository.PaymentRepository;
 import com.gustavohenning.dbecommercev1.repository.UserRepository;
+import com.gustavohenning.dbecommercev1.service.CartItemService;
 import com.gustavohenning.dbecommercev1.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -21,12 +20,14 @@ public class PaymentServiceImpl implements PaymentService {
     private final CartRepository cartRepository;
     private final PaymentRepository paymentRepository;
     private final UserRepository userRepository;
+    private final CartItemService cartItemService;
 
     @Autowired
-    public PaymentServiceImpl(CartRepository cartRepository, PaymentRepository paymentRepository, UserRepository userRepository) {
+    public PaymentServiceImpl(CartRepository cartRepository, PaymentRepository paymentRepository, UserRepository userRepository, CartItemService cartItemService) {
         this.cartRepository = cartRepository;
         this.paymentRepository = paymentRepository;
         this.userRepository = userRepository;
+        this.cartItemService = cartItemService;
     }
 
     public Payment makePayment(Long cartId) {
@@ -48,6 +49,8 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setDeliveryPrice(deliveryPrice);
         payment.setTotalPrice(totalPrice);
         payment.setPaymentDate(LocalDateTime.now());
+
+        cartItemService.removeCartItemsAndDeleteFromCart(cartId);
 
         return paymentRepository.save(payment);
     }

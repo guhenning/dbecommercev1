@@ -1,6 +1,5 @@
 package com.gustavohenning.dbecommercev1.service.impl;
 
-import com.gustavohenning.dbecommercev1.entity.ApplicationUser;
 import com.gustavohenning.dbecommercev1.entity.Cart;
 import com.gustavohenning.dbecommercev1.entity.CartItem;
 import com.gustavohenning.dbecommercev1.entity.Item;
@@ -71,7 +70,6 @@ public class CartItemServiceImpl implements CartItemService {
     public Cart removeCartItemFromCart(Long cartId, Long cartItemId) {
         Cart cart = cartService.getCart(cartId);
 
-
         Optional<CartItem> existingCartItem = cart.getCartItems().stream()
                 .filter(items -> items.getItem().getId().equals(cartItemId))
                 .findFirst();
@@ -86,4 +84,22 @@ public class CartItemServiceImpl implements CartItemService {
 
         return cartRepository.save(cart);
     }
+
+    @Transactional
+    public void removeCartItemsAndDeleteFromCart(Long cartId) {
+        Cart cart = cartService.getCart(cartId);
+
+        List<CartItem> cartItemsToRemove = new ArrayList<>(cart.getCartItems());
+
+        for (CartItem cartItem : cartItemsToRemove) {
+            cart.removeCartItem(cartItem);
+        }
+
+        for (CartItem cartItem : cartItemsToRemove) {
+            cartItemRepository.delete(cartItem);
+        }
+    }
+
+
+
 }
