@@ -8,7 +8,7 @@ public interface CartItemService {
 
     CartItem getCartItem(Long id);
 
-    Cart addCartItemToCart(Long cartId, CartItemDTO cartItemDto);
+    Cart addCartItemToCart(Long cartId, CartItemDTO cartItemDto, String token);
 
     Cart removeCartItemFromCart(Long cartId, Long cartItemId, String token);
 

@@ -6,7 +6,7 @@ import com.gustavohenning.dbecommercev1.entity.CartItem;
 import com.gustavohenning.dbecommercev1.entity.Item;
 import com.gustavohenning.dbecommercev1.entity.dto.CartItemDTO;
 import com.gustavohenning.dbecommercev1.entity.exception.CartItemNotFoundException;
-import com.gustavohenning.dbecommercev1.entity.exception.UserNotAuthorisedToModifyCart;
+import com.gustavohenning.dbecommercev1.entity.exception.UserNotAuthorisedToSeeOrModifyCart;
 import com.gustavohenning.dbecommercev1.repository.CartItemRepository;
 import com.gustavohenning.dbecommercev1.repository.CartRepository;
 import com.gustavohenning.dbecommercev1.repository.UserRepository;
@@ -46,40 +46,44 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Transactional
-    public Cart addCartItemToCart(Long cartId, CartItemDTO cartItemDto) {
-        Cart cart = cartService.getCart(cartId);
-        CartItem cartItem = CartItem.from(cartItemDto);
-        cartItem.setCart(cart);
+    public Cart addCartItemToCart(Long cartId, CartItemDTO cartItemDto, @RequestHeader("Authorization") String token) {
+        String userIdentifier = extractUserFromToken.extractUserIdentifier(token);
 
-        Item item = itemService.getItem(cartItemDto.getItemId());
+        if (isCartOwner(cartId, userIdentifier)) {
+            Cart cart = cartService.getCart(cartId);
+            CartItem cartItem = CartItem.from(cartItemDto);
+            cartItem.setCart(cart);
 
-        Optional<CartItem> existingCartItem = cart.getCartItems().stream()
-                .filter(items -> items.getItem().getId().equals(cartItemDto.getItemId()))
-                .findFirst();
+            Item item = itemService.getItem(cartItemDto.getItemId());
 
-        if (existingCartItem.isPresent()) {
-            existingCartItem.get().setItemQuantity(existingCartItem.get().getItemQuantity() + 1);
+            Optional<CartItem> existingCartItem = cart.getCartItems().stream()
+                    .filter(items -> items.getItem().getId().equals(cartItemDto.getItemId()))
+                    .findFirst();
 
-            // TODO setStockQuantity only after payment
-            //item.setStockQuantity(item.getStockQuantity() - 1);
-        } else {
-            CartItem newCartItem = new CartItem();
-            newCartItem.setItem(item);
-            newCartItem.setItemQuantity(1);
-            newCartItem.setCart(cart);
-            cart.getCartItems().add(newCartItem);
-           // TODO setStockQuantity only after payment
-           // item.setStockQuantity(item.getStockQuantity() - 1);
-        }
+            if (existingCartItem.isPresent()) {
+                existingCartItem.get().setItemQuantity(existingCartItem.get().getItemQuantity() + 1);
 
-        return cartRepository.save(cart);
+                // TODO setStockQuantity only after payment
+                //item.setStockQuantity(item.getStockQuantity() - 1);
+            } else {
+                CartItem newCartItem = new CartItem();
+                newCartItem.setItem(item);
+                newCartItem.setItemQuantity(1);
+                newCartItem.setCart(cart);
+                cart.getCartItems().add(newCartItem);
+                // TODO setStockQuantity only after payment
+                // item.setStockQuantity(item.getStockQuantity() - 1);
+            }
+
+            return cartRepository.save(cart);
+        } else throw new UserNotAuthorisedToSeeOrModifyCart(userIdentifier, cartId);
     }
 
     @Transactional
     public Cart removeCartItemFromCart(Long cartId, Long cartItemId, @RequestHeader("Authorization") String token) {
-        Cart cart = cartService.getCart(cartId);
-
         String userIdentifier = extractUserFromToken.extractUserIdentifier(token);
+
+        Cart cart = cartService.getCart(cartId);
 
         if (isCartOwner(cartId, userIdentifier)) {
 
@@ -96,7 +100,7 @@ public class CartItemServiceImpl implements CartItemService {
             } else throw new CartItemNotFoundException(cartItemId);
 
             return cartRepository.save(cart);
-        } else throw new UserNotAuthorisedToModifyCart(userIdentifier, cartId);
+        } else throw new UserNotAuthorisedToSeeOrModifyCart(userIdentifier, cartId);
     }
 
     @Transactional

@@ -34,8 +34,8 @@ public class CartItemController {
 
     @Operation(summary = "Add Item to Cart using Cart ID", description = "Add Item to CartItem")
     @PostMapping(value = "/add")
-    public ResponseEntity<CartDTO> addCartItemToCart(@PathVariable final Long cartId, @RequestBody final CartItemDTO cartItemDto) {
-        Cart cart = cartItemService.addCartItemToCart(cartId, cartItemDto);
+    public ResponseEntity<CartDTO> addCartItemToCart(@PathVariable final Long cartId, @RequestBody final CartItemDTO cartItemDto,  @RequestHeader("Authorization") String token) {
+        Cart cart = cartItemService.addCartItemToCart(cartId, cartItemDto, token);
         return new ResponseEntity<>(CartDTO.from(cart), HttpStatus.OK);
     }
 
