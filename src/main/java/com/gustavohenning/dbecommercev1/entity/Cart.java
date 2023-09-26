@@ -39,10 +39,8 @@ public class Cart {
     @JoinColumn(name = "cart_id")
     private List<CartItem> cartItems = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY,
-            cascade =  CascadeType.MERGE,
-            mappedBy = "cart")
-    private Payment payment;
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    private List<Payment> payments = new ArrayList<>();
 
 
     @CreationTimestamp
@@ -60,8 +58,7 @@ public class Cart {
     public void removeCartItem(CartItem cartItem) {
         cartItems.remove(cartItem);
     }
-
-   // TODO Remove line public void clearCartItems() { cartItems.clear();}
+    
 
     public static Cart from(CartDto cartDto) {
         Cart cart = new Cart();
