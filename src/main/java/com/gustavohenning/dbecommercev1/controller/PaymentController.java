@@ -25,13 +25,10 @@ public class PaymentController {
     }
 
     @PostMapping(value = "{cartId}")
+    @Operation(summary = "Make Payment", description = "Make Payment Using cartId")
     public ResponseEntity<PaymentDTO> makePayment(@PathVariable Long cartId) {
-        try {
             Payment payment = paymentService.makePayment(cartId);
             return new ResponseEntity<>(PaymentDTO.from(payment), HttpStatus.CREATED);
-        } catch (Exception e) {
-            // Handle exceptions and return an appropriate response
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 }
+
