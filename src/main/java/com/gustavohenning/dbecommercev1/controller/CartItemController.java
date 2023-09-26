@@ -34,15 +34,15 @@ public class CartItemController {
 
     @Operation(summary = "Add Item to Cart using Cart ID", description = "Add Item to CartItem")
     @PostMapping(value = "/add")
-    public ResponseEntity<CartDTO> addCartItemToCart(@PathVariable final Long cartId, @RequestBody final CartItemDTO cartItemDto) {
-        Cart cart = cartItemService.addCartItemToCart(cartId, cartItemDto);
+    public ResponseEntity<CartDTO> addCartItemToCart(@PathVariable final Long cartId, @RequestBody final CartItemDTO cartItemDto,  @RequestHeader("Authorization") String token) {
+        Cart cart = cartItemService.addCartItemToCart(cartId, cartItemDto, token);
         return new ResponseEntity<>(CartDTO.from(cart), HttpStatus.OK);
     }
 
     @Operation(summary = "Delete Item from Cart ", description = "Delete Item from CartItem")
     @DeleteMapping(value = "/delete/{cartItemId}")
-    public ResponseEntity<CartDTO> deleteItemFromCart(@PathVariable final Long cartId, @PathVariable final Long cartItemId) {
-        Cart cart = cartItemService.removeCartItemFromCart(cartId, cartItemId);
+    public ResponseEntity<CartDTO> deleteItemFromCart(@PathVariable final Long cartId, @PathVariable final Long cartItemId, @RequestHeader("Authorization") String token) {
+        Cart cart = cartItemService.removeCartItemFromCart(cartId, cartItemId, token);
         return new ResponseEntity<>(CartDTO.from(cart), HttpStatus.OK);
     }
 }

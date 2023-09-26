@@ -1,5 +1,9 @@
 package com.gustavohenning.dbecommercev1.config;
 
+import com.gustavohenning.dbecommercev1.repository.UserRepository;
+import com.gustavohenning.dbecommercev1.service.impl.CartServiceImpl;
+import com.gustavohenning.dbecommercev1.util.CartOwner;
+import com.gustavohenning.dbecommercev1.util.ExtractUserFromToken;
 import com.gustavohenning.dbecommercev1.util.RSAKeyProperties;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -89,6 +93,16 @@ public class SecurityConfiguration {
         JWK jwk = new RSAKey.Builder(keys.getPublicKey()).privateKey(keys.getPrivateKey()).build();
         JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwks);
+    }
+
+    @Bean
+    public ExtractUserFromToken extractUserFromToken(JwtDecoder jwtDecoder) {
+        return new ExtractUserFromToken(jwtDecoder);
+    }
+
+    @Bean
+    public CartOwner cartOwner(UserRepository userRepository, CartServiceImpl cartService) {
+        return new CartOwner(userRepository, cartService);
     }
 
     @Bean
