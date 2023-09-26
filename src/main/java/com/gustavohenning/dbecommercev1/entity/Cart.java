@@ -1,7 +1,6 @@
 package com.gustavohenning.dbecommercev1.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.gustavohenning.dbecommercev1.entity.dto.CartDto;
+import com.gustavohenning.dbecommercev1.entity.dto.CartDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,11 +31,15 @@ public class Cart {
     @JoinColumn(name = "user_id")
     private ApplicationUser user;
 
+
     private Long userId;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "cart_id")
     private List<CartItem> cartItems = new ArrayList<>();
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    private List<Payment> payments = new ArrayList<>();
 
 
     @CreationTimestamp
@@ -55,7 +58,8 @@ public class Cart {
         cartItems.remove(cartItem);
     }
 
-    public static Cart from(CartDto cartDto) {
+
+    public static Cart from(CartDTO cartDto) {
         Cart cart = new Cart();
         cart.setUserId(cartDto.getUserId());
         cart.setCreatedDate(cartDto.getCreatedDate());

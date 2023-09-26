@@ -4,6 +4,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+.run/com.gustavohenning.dbecommercev1.run.xml
+
 ### STS ###
 .apt_generated
 .classpath

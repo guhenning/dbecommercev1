@@ -1,6 +1,6 @@
 package com.gustavohenning.dbecommercev1.entity;
 
-import com.gustavohenning.dbecommercev1.entity.dto.ItemDto;
+import com.gustavohenning.dbecommercev1.entity.dto.ItemDTO;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -50,7 +50,7 @@ public class Item {
 
 
 
-    public static Item from(ItemDto itemDto) {
+    public static Item from(ItemDTO itemDto) {
         Item item = new Item();
         item.setName(itemDto.getName());
         item.setShortDescription(itemDto.getShortDescription());

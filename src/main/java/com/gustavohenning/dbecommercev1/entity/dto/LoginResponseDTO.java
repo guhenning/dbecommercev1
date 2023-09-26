@@ -1,6 +1,5 @@
 package com.gustavohenning.dbecommercev1.entity.dto;
 
-import com.gustavohenning.dbecommercev1.entity.ApplicationUser;
 import lombok.*;
 
 @Data
@@ -8,6 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 public class LoginResponseDTO {
 
-    private UserDto user;
+    private UserDTO user;
     private String jwt;
 }

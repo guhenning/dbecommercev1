@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Data
-public class CartItemDto {
+public class CartItemDTO {
     private Long   id;
     private int    itemQuantity;
     private double itemTotalPrice;
@@ -32,10 +32,10 @@ public class CartItemDto {
     private Long itemId;
 
 
-    private PlainCartDto plainCartDto;
+    private PlainCartDTO plainCartDto;
 
-    public static CartItemDto from(CartItem cartItem) {
-        CartItemDto cartItemDto = new CartItemDto();
+    public static CartItemDTO from(CartItem cartItem) {
+        CartItemDTO cartItemDto = new CartItemDTO();
         cartItemDto.setId(cartItem.getId());
         cartItemDto.setCreatedDate(cartItem.getCreatedDate());
         cartItemDto.setUpdatedDate(cartItem.getUpdatedDate());
@@ -54,7 +54,7 @@ public class CartItemDto {
         cartItemDto.setItemDiscount(cartItem.getItem().getDiscount());
 
         if(Objects.nonNull(cartItem.getCart())) {
-            cartItemDto.setPlainCartDto(PlainCartDto.from(cartItem.getCart()));
+            cartItemDto.setPlainCartDto(PlainCartDTO.from(cartItem.getCart()));
         }
         return cartItemDto;
     }
