@@ -41,8 +41,8 @@ public class CartItemController {
 
     @Operation(summary = "Delete Item from Cart ", description = "Delete Item from CartItem")
     @DeleteMapping(value = "/delete/{cartItemId}")
-    public ResponseEntity<CartDTO> deleteItemFromCart(@PathVariable final Long cartId, @PathVariable final Long cartItemId) {
-        Cart cart = cartItemService.removeCartItemFromCart(cartId, cartItemId);
+    public ResponseEntity<CartDTO> deleteItemFromCart(@PathVariable final Long cartId, @PathVariable final Long cartItemId, @RequestHeader("Authorization") String token) {
+        Cart cart = cartItemService.removeCartItemFromCart(cartId, cartItemId, token);
         return new ResponseEntity<>(CartDTO.from(cart), HttpStatus.OK);
     }
 }

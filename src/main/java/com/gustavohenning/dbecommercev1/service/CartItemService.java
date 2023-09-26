@@ -10,8 +10,10 @@ public interface CartItemService {
 
     Cart addCartItemToCart(Long cartId, CartItemDTO cartItemDto);
 
-    Cart removeCartItemFromCart(Long cartId, Long cartItemId);
+    Cart removeCartItemFromCart(Long cartId, Long cartItemId, String token);
 
     void removeCartItemsAndDeleteFromCart(Long cartId);
+
+    boolean isCartOwner(Long cartId, String username);
 
 }

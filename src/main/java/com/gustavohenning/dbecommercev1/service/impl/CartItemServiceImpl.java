@@ -1,16 +1,21 @@
 package com.gustavohenning.dbecommercev1.service.impl;
 
+import com.gustavohenning.dbecommercev1.entity.ApplicationUser;
 import com.gustavohenning.dbecommercev1.entity.Cart;
 import com.gustavohenning.dbecommercev1.entity.CartItem;
 import com.gustavohenning.dbecommercev1.entity.Item;
 import com.gustavohenning.dbecommercev1.entity.dto.CartItemDTO;
 import com.gustavohenning.dbecommercev1.entity.exception.CartItemNotFoundException;
+import com.gustavohenning.dbecommercev1.entity.exception.UserNotAuthorisedToModifyCart;
 import com.gustavohenning.dbecommercev1.repository.CartItemRepository;
 import com.gustavohenning.dbecommercev1.repository.CartRepository;
+import com.gustavohenning.dbecommercev1.repository.UserRepository;
 import com.gustavohenning.dbecommercev1.service.CartItemService;
+import com.gustavohenning.dbecommercev1.util.ExtractUserFromToken;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,13 +28,17 @@ public class CartItemServiceImpl implements CartItemService {
     private final CartServiceImpl cartService;
     private final ItemServiceImpl itemService;
     private final CartRepository cartRepository;
+    private final UserRepository userRepository;
+    private final ExtractUserFromToken extractUserFromToken;
 
     @Autowired
-    public CartItemServiceImpl(CartItemRepository cartItemRepository, CartServiceImpl cartService, ItemServiceImpl itemService, CartRepository cartRepository) {
+    public CartItemServiceImpl(CartItemRepository cartItemRepository, CartServiceImpl cartService, ItemServiceImpl itemService, CartRepository cartRepository, UserRepository userRepository, ExtractUserFromToken extractUserFromToken) {
         this.cartItemRepository = cartItemRepository;
         this.cartService = cartService;
         this.itemService = itemService;
         this.cartRepository = cartRepository;
+        this.userRepository = userRepository;
+        this.extractUserFromToken = extractUserFromToken;
     }
 
     public CartItem getCartItem(Long id) {
@@ -67,22 +76,27 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Transactional
-    public Cart removeCartItemFromCart(Long cartId, Long cartItemId) {
+    public Cart removeCartItemFromCart(Long cartId, Long cartItemId, @RequestHeader("Authorization") String token) {
         Cart cart = cartService.getCart(cartId);
 
-        Optional<CartItem> existingCartItem = cart.getCartItems().stream()
-                .filter(items -> items.getItem().getId().equals(cartItemId))
-                .findFirst();
+        String userIdentifier = extractUserFromToken.extractUserIdentifier(token);
 
-        if (existingCartItem.isPresent()) {
-            if (existingCartItem.get().getItemQuantity() > 1) {
-                existingCartItem.get().setItemQuantity(existingCartItem.get().getItemQuantity() - 1);
-            } else {
-                cart.removeCartItem(existingCartItem.get());
-            }
-        } else throw new CartItemNotFoundException(cartItemId);
+        if (isCartOwner(cartId, userIdentifier)) {
 
-        return cartRepository.save(cart);
+            Optional<CartItem> existingCartItem = cart.getCartItems().stream()
+                    .filter(items -> items.getItem().getId().equals(cartItemId))
+                    .findFirst();
+
+            if (existingCartItem.isPresent()) {
+                if (existingCartItem.get().getItemQuantity() > 1) {
+                    existingCartItem.get().setItemQuantity(existingCartItem.get().getItemQuantity() - 1);
+                } else {
+                    cart.removeCartItem(existingCartItem.get());
+                }
+            } else throw new CartItemNotFoundException(cartItemId);
+
+            return cartRepository.save(cart);
+        } else throw new UserNotAuthorisedToModifyCart(userIdentifier, cartId);
     }
 
     @Transactional
@@ -100,6 +114,11 @@ public class CartItemServiceImpl implements CartItemService {
         }
     }
 
+    @Transactional
+    public boolean isCartOwner(Long cartId, String username) {
+        Cart cart = cartService.getCart(cartId);
+        Optional<ApplicationUser> userOptional = userRepository.findByUsername(username);
 
-
+        return userOptional.isPresent() && cart.getUser().equals(userOptional.get());
+    }
 }
