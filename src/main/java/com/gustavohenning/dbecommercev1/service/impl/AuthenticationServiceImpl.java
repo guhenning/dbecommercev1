@@ -5,7 +5,7 @@ import com.gustavohenning.dbecommercev1.entity.ApplicationUser;
 import com.gustavohenning.dbecommercev1.entity.Cart;
 import com.gustavohenning.dbecommercev1.entity.Role;
 import com.gustavohenning.dbecommercev1.entity.dto.LoginResponseDTO;
-import com.gustavohenning.dbecommercev1.entity.dto.UserDto;
+import com.gustavohenning.dbecommercev1.entity.dto.UserDTO;
 import com.gustavohenning.dbecommercev1.entity.exception.UsernameAlreadyExistsException;
 import com.gustavohenning.dbecommercev1.repository.CartRepository;
 import com.gustavohenning.dbecommercev1.repository.RoleRepository;
@@ -167,7 +167,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             String token = tokenService.generateJwt(auth);
 
             ApplicationUser user = userRepository.findByUsername(username).orElse(null);
-            UserDto userDTO = mapUserToUserDTO(user);
+            UserDTO userDTO = mapUserToUserDTO(user);
 
             return new LoginResponseDTO(userDTO, token);
         } catch (AuthenticationException e) {
@@ -175,12 +175,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
-    private UserDto mapUserToUserDTO(ApplicationUser user) {
+    private UserDTO mapUserToUserDTO(ApplicationUser user) {
         if (user == null) {
             return null;
         }
 
-        UserDto userDTO = new UserDto();
+        UserDTO userDTO = new UserDTO();
         userDTO.setUsername(user.getUsername());
         userDTO.setUserId(user.getUserId());
 

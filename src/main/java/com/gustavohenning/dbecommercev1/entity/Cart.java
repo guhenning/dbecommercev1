@@ -1,7 +1,6 @@
 package com.gustavohenning.dbecommercev1.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.gustavohenning.dbecommercev1.entity.dto.CartDto;
+import com.gustavohenning.dbecommercev1.entity.dto.CartDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -58,9 +57,9 @@ public class Cart {
     public void removeCartItem(CartItem cartItem) {
         cartItems.remove(cartItem);
     }
-    
 
-    public static Cart from(CartDto cartDto) {
+
+    public static Cart from(CartDTO cartDto) {
         Cart cart = new Cart();
         cart.setUserId(cartDto.getUserId());
         cart.setCreatedDate(cartDto.getCreatedDate());

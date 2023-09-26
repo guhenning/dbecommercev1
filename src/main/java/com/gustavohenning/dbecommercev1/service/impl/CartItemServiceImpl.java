@@ -3,7 +3,7 @@ package com.gustavohenning.dbecommercev1.service.impl;
 import com.gustavohenning.dbecommercev1.entity.Cart;
 import com.gustavohenning.dbecommercev1.entity.CartItem;
 import com.gustavohenning.dbecommercev1.entity.Item;
-import com.gustavohenning.dbecommercev1.entity.dto.CartItemDto;
+import com.gustavohenning.dbecommercev1.entity.dto.CartItemDTO;
 import com.gustavohenning.dbecommercev1.entity.exception.CartItemNotFoundException;
 import com.gustavohenning.dbecommercev1.repository.CartItemRepository;
 import com.gustavohenning.dbecommercev1.repository.CartRepository;
@@ -37,7 +37,7 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Transactional
-    public Cart addCartItemToCart(Long cartId, CartItemDto cartItemDto) {
+    public Cart addCartItemToCart(Long cartId, CartItemDTO cartItemDto) {
         Cart cart = cartService.getCart(cartId);
         CartItem cartItem = CartItem.from(cartItemDto);
         cartItem.setCart(cart);

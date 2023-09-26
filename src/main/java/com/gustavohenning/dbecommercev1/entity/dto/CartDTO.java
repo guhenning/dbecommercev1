@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
-public class CartDto {
+public class CartDTO {
 
     private Long id;
 
-    List<CartItemDto> cartItemsDto = new ArrayList<>();
+    List<CartItemDTO> cartItemsDto = new ArrayList<>();
 
     private double totalPrice;
     private double discountedPrice;
@@ -32,12 +32,12 @@ public class CartDto {
 
 
 
-    public static CartDto from(Cart cart) {
-        CartDto cartDto = new CartDto();
+    public static CartDTO from(Cart cart) {
+        CartDTO cartDto = new CartDTO();
         cartDto.setId(cart.getId());
         cartDto.setUserId(cart.getUserId());
-        List<CartItemDto> cartItemDtos = cart.getCartItems().stream()
-                .map(CartItemDto::from)
+        List<CartItemDTO> cartItemDtos = cart.getCartItems().stream()
+                .map(CartItemDTO::from)
                 .collect(Collectors.toList());
         cartDto.setCartItemsDto(cartItemDtos);
 

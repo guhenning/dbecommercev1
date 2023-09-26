@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
-public class ItemDto {
+public class ItemDTO {
     private Long id;
     private String name;
     private String shortDescription;
@@ -31,8 +31,8 @@ public class ItemDto {
     private LocalDateTime updatedDate;
 
     private List<Long> categoryIds;
-    public static ItemDto from(Item item) {
-        ItemDto itemDto = new ItemDto();
+    public static ItemDTO from(Item item) {
+        ItemDTO itemDto = new ItemDTO();
         itemDto.setId(item.getId());
         itemDto.setName(item.getName());
         itemDto.setShortDescription(item.getShortDescription());
