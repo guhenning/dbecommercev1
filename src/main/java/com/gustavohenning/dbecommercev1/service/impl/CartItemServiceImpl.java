@@ -61,17 +61,12 @@ public class CartItemServiceImpl implements CartItemService {
 
             if (existingCartItem.isPresent()) {
                 existingCartItem.get().setItemQuantity(existingCartItem.get().getItemQuantity() + 1);
-
-                // TODO setStockQuantity only after payment
-                //item.setStockQuantity(item.getStockQuantity() - 1);
             } else {
                 CartItem newCartItem = new CartItem();
                 newCartItem.setItem(item);
                 newCartItem.setItemQuantity(1);
                 newCartItem.setCart(cart);
                 cart.getCartItems().add(newCartItem);
-                // TODO setStockQuantity only after payment
-                // item.setStockQuantity(item.getStockQuantity() - 1);
             }
 
             return cartRepository.save(cart);
@@ -104,18 +99,24 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Transactional
-    public void removeCartItemsAndDeleteFromCart(Long cartId) {
+    public void removeCartItemsAndDeleteFromCartAfterPayment(Long cartId) {
         Cart cart = cartService.getCart(cartId);
 
         List<CartItem> cartItemsToRemove = new ArrayList<>(cart.getCartItems());
 
         for (CartItem cartItem : cartItemsToRemove) {
+
+            Item item = cartItem.getItem();
+            int cartItemQuantity = cartItem.getItemQuantity();
+            item.setStockQuantity(item.getStockQuantity() - cartItemQuantity);
+
             cart.removeCartItem(cartItem);
         }
 
         for (CartItem cartItem : cartItemsToRemove) {
             cartItemRepository.delete(cartItem);
         }
+
     }
 
 }

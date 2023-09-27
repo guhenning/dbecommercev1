@@ -34,7 +34,7 @@ public class Cart {
 
     private Long userId;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "cart_id")
     private List<CartItem> cartItems = new ArrayList<>();
 

@@ -118,7 +118,7 @@ public class ItemController {
     }
 
     @Operation(summary = "Add New Item", description = "Add a new Item to DB")
-    @PostMapping
+    @PostMapping("/add")
     @Secured("ROLE_ADMIN")
     public ResponseEntity<ItemDTO> addItem(@RequestBody final ItemDTO itemDto) {
 
@@ -129,16 +129,23 @@ public class ItemController {
     }
 
     @Operation(summary = "Update Item by ID", description = "Update the Item in DB")
-    @PutMapping(value = "{id}")
+    @PutMapping(value = "/update/{id}")
     @Secured("ROLE_ADMIN")
     public ResponseEntity<ItemDTO> editItem(@PathVariable final Long id, @RequestBody final ItemDTO itemDto) {
         Item editedItem = itemService.editItem(id, Item.from(itemDto));
         return new ResponseEntity<>(ItemDTO.from(editedItem), HttpStatus.OK);
+    }
 
+    @Operation(summary = "Update Item Stock by ID", description = "Update the Item Stock in DB")
+    @PutMapping(value = "/updatestock/{id}/{updateStockQnt}")
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity<ItemDTO> editItemStock(@PathVariable final Long id, @PathVariable final int updateStockQnt) {
+        Item stockEditedItem = itemService.editItemStock(id, updateStockQnt);
+        return new ResponseEntity<>(ItemDTO.from(stockEditedItem), HttpStatus.OK);
     }
 
     @Operation(summary = "Delete Item by ID", description = "Delete the Item from ID in DB")
-    @DeleteMapping(value = "{id}")
+    @DeleteMapping(value = "/delete/{id}")
     @Secured("ROLE_ADMIN")
     public ResponseEntity<ItemDTO> deleteItem(@PathVariable final Long id) {
         Item item = itemService.deleteItem(id);

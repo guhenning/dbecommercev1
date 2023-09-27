@@ -12,6 +12,6 @@ public interface CartItemService {
 
     Cart removeCartItemFromCart(Long cartId, Long cartItemId, String token);
 
-    void removeCartItemsAndDeleteFromCart(Long cartId);
+    void removeCartItemsAndDeleteFromCartAfterPayment(Long cartId);
 
 }

@@ -26,8 +26,8 @@ public class PaymentController {
 
     @PostMapping(value = "{cartId}")
     @Operation(summary = "Make Payment", description = "Make Payment Using cartId")
-    public ResponseEntity<PaymentDTO> makePayment(@PathVariable Long cartId) {
-            Payment payment = paymentService.makePayment(cartId);
+    public ResponseEntity<PaymentDTO> makePayment(@PathVariable Long cartId, @RequestHeader("Authorization") String token) {
+            Payment payment = paymentService.makePayment(cartId, token);
             return new ResponseEntity<>(PaymentDTO.from(payment), HttpStatus.CREATED);
     }
 }
