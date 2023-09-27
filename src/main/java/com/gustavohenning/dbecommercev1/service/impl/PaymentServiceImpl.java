@@ -30,7 +30,7 @@ public class PaymentServiceImpl implements PaymentService {
         this.cartItemService = cartItemService;
     }
 
-    public Payment makePayment(Long cartId) {
+    public Payment makePayment(Long cartId, String token) {
 
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new CartNotFoundException(cartId));
@@ -50,7 +50,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setTotalPrice(totalPrice);
         payment.setPaymentDate(LocalDateTime.now());
 
-        cartItemService.removeCartItemsAndDeleteFromCart(cartId);
+        cartItemService.removeCartItemsAndDeleteFromCartAfterPayment(cartId);
 
         return paymentRepository.save(payment);
     }

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ItemService {
 
-    Item addItem(Item item, List<Long> categoryIds, Long brandId);
+
 
     List<Item> getItems();
 
@@ -28,9 +28,13 @@ public interface ItemService {
 
     List<Item> getItemsByBrandId(Long brandId);
 
-    Item deleteItem(Long id);
+    Item addItem(Item item, List<Long> categoryIds, Long brandId);
+
 
     Item editItem(Long id, Item item);
 
+    Item editItemStock(Long id, int updateStockQnt);
+
+    Item deleteItem(Long id);
 
 }

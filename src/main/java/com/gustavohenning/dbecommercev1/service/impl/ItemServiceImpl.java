@@ -6,6 +6,7 @@ import com.gustavohenning.dbecommercev1.entity.Item;
 import com.gustavohenning.dbecommercev1.entity.exception.BrandNotFoundException;
 import com.gustavohenning.dbecommercev1.entity.exception.CategoryNotFoundException;
 import com.gustavohenning.dbecommercev1.entity.exception.ItemNotFoundException;
+import com.gustavohenning.dbecommercev1.entity.exception.ItemStockCannotBeNegative;
 import com.gustavohenning.dbecommercev1.repository.BrandRepository;
 import com.gustavohenning.dbecommercev1.repository.CategoryRepository;
 import com.gustavohenning.dbecommercev1.repository.ItemRepository;
@@ -35,25 +36,7 @@ public class ItemServiceImpl implements ItemService {
         this.brandRepository = brandRepository;
     }
 
-    @Transactional
-    public Item addItem(Item item, List<Long> categoryIds, Long brandId) {
-        Brand brand = brandRepository.findById(brandId).orElseThrow(() -> new BrandNotFoundException(brandId));
-        item.setBrand(brand);
 
-        Item addedItem = itemRepository.save(item);
-
-        List<Category> categories = new ArrayList<>();
-
-        for (Long categoryId : categoryIds) {
-            Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new CategoryNotFoundException(categoryId));
-            categories.add(category);
-        }
-
-        addedItem.setCategories(categories);
-
-        return itemRepository.save(addedItem);
-    }
 
     public List<Item> getItems() {
         return new ArrayList<>(itemRepository.findAll());
@@ -93,10 +76,24 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.findByBrandId(brandId);
     }
 
-    public Item deleteItem(Long id) {
-        Item item = getItem(id);
-        itemRepository.delete(item);
-        return item;
+    @Transactional
+    public Item addItem(Item item, List<Long> categoryIds, Long brandId) {
+        Brand brand = brandRepository.findById(brandId).orElseThrow(() -> new BrandNotFoundException(brandId));
+        item.setBrand(brand);
+
+        Item addedItem = itemRepository.save(item);
+
+        List<Category> categories = new ArrayList<>();
+
+        for (Long categoryId : categoryIds) {
+            Category category = categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new CategoryNotFoundException(categoryId));
+            categories.add(category);
+        }
+
+        addedItem.setCategories(categories);
+
+        return itemRepository.save(addedItem);
     }
 
     @Transactional
@@ -141,4 +138,26 @@ public class ItemServiceImpl implements ItemService {
 
         return itemToEdit;
     }
+
+    @Transactional
+    public Item editItemStock(Long id, int updateStockQnt) {
+        Item itemToEditStock = itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException(id));
+        int previousStockQtn = itemToEditStock.getStockQuantity();
+        int newStockQuantity = previousStockQtn + updateStockQnt;
+
+        if (newStockQuantity < 0) {
+            throw new ItemStockCannotBeNegative(id, previousStockQtn, newStockQuantity);
+        }
+
+        itemToEditStock.setStockQuantity(newStockQuantity);
+        return itemToEditStock;
+    }
+
+    public Item deleteItem(Long id) {
+        Item item = getItem(id);
+        itemRepository.delete(item);
+        return item;
+    }
+
+
 }

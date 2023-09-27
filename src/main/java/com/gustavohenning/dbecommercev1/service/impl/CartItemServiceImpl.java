@@ -104,18 +104,24 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Transactional
-    public void removeCartItemsAndDeleteFromCart(Long cartId) {
+    public void removeCartItemsAndDeleteFromCartAfterPayment(Long cartId) {
         Cart cart = cartService.getCart(cartId);
 
         List<CartItem> cartItemsToRemove = new ArrayList<>(cart.getCartItems());
 
         for (CartItem cartItem : cartItemsToRemove) {
+
+            Item item = cartItem.getItem();
+            int cartItemQuantity = cartItem.getItemQuantity();
+            item.setStockQuantity(item.getStockQuantity() - cartItemQuantity);
+
             cart.removeCartItem(cartItem);
         }
 
         for (CartItem cartItem : cartItemsToRemove) {
             cartItemRepository.delete(cartItem);
         }
+
     }
 
 }
