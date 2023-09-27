@@ -61,17 +61,12 @@ public class CartItemServiceImpl implements CartItemService {
 
             if (existingCartItem.isPresent()) {
                 existingCartItem.get().setItemQuantity(existingCartItem.get().getItemQuantity() + 1);
-
-                // TODO setStockQuantity only after payment
-                //item.setStockQuantity(item.getStockQuantity() - 1);
             } else {
                 CartItem newCartItem = new CartItem();
                 newCartItem.setItem(item);
                 newCartItem.setItemQuantity(1);
                 newCartItem.setCart(cart);
                 cart.getCartItems().add(newCartItem);
-                // TODO setStockQuantity only after payment
-                // item.setStockQuantity(item.getStockQuantity() - 1);
             }
 
             return cartRepository.save(cart);

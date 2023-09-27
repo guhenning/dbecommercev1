@@ -4,13 +4,18 @@ import com.gustavohenning.dbecommercev1.entity.Cart;
 import com.gustavohenning.dbecommercev1.entity.Payment;
 import com.gustavohenning.dbecommercev1.entity.PaymentStatus;
 import com.gustavohenning.dbecommercev1.entity.exception.CartNotFoundException;
+import com.gustavohenning.dbecommercev1.entity.exception.UserNotAuthorisedToMakePayment;
 import com.gustavohenning.dbecommercev1.repository.CartRepository;
 import com.gustavohenning.dbecommercev1.repository.PaymentRepository;
 import com.gustavohenning.dbecommercev1.repository.UserRepository;
 import com.gustavohenning.dbecommercev1.service.CartItemService;
 import com.gustavohenning.dbecommercev1.service.PaymentService;
+import com.gustavohenning.dbecommercev1.util.CartOwner;
+import com.gustavohenning.dbecommercev1.util.ExtractUserFromToken;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.time.LocalDateTime;
 
@@ -21,38 +26,47 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final UserRepository userRepository;
     private final CartItemService cartItemService;
+    private final CartOwner cartOwner;
+    private final ExtractUserFromToken extractUserFromToken;
 
     @Autowired
-    public PaymentServiceImpl(CartRepository cartRepository, PaymentRepository paymentRepository, UserRepository userRepository, CartItemService cartItemService) {
+    public PaymentServiceImpl(CartRepository cartRepository, PaymentRepository paymentRepository, UserRepository userRepository, CartItemService cartItemService, CartOwner cartOwner, ExtractUserFromToken extractUserFromToken) {
         this.cartRepository = cartRepository;
         this.paymentRepository = paymentRepository;
         this.userRepository = userRepository;
         this.cartItemService = cartItemService;
+        this.cartOwner = cartOwner;
+        this.extractUserFromToken = extractUserFromToken;
     }
 
-    public Payment makePayment(Long cartId, String token) {
+    @Transactional
+    public Payment makePayment(Long cartId, @RequestHeader("Authorization") String token) {
+        String userIdentifier = extractUserFromToken.extractUserIdentifier(token);
 
-        Cart cart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new CartNotFoundException(cartId));
+        if (cartOwner.isCartOwner(cartId, userIdentifier)) {
 
-        double totalItemsPrice = cart.getCartItems().stream()
-                .mapToDouble(cartItem -> cartItem.getItem().getSalePrice() * cartItem.getItemQuantity())
-                .sum();
-        double deliveryPrice = calculateDeliveryPrice(cartId);
-        double totalPrice = totalItemsPrice + deliveryPrice;
+            Cart cart = cartRepository.findById(cartId)
+                    .orElseThrow(() -> new CartNotFoundException(cartId));
+
+            double totalItemsPrice = cart.getCartItems().stream()
+                    .mapToDouble(cartItem -> cartItem.getItem().getSalePrice() * cartItem.getItemQuantity())
+                    .sum();
+            double deliveryPrice = calculateDeliveryPrice(cartId);
+            double totalPrice = totalItemsPrice + deliveryPrice;
 
 
-        Payment payment = new Payment();
-        payment.setCart(cart);
-        payment.setStatus(PaymentStatus.PAID);
-        payment.setItemsPrice(totalItemsPrice);
-        payment.setDeliveryPrice(deliveryPrice);
-        payment.setTotalPrice(totalPrice);
-        payment.setPaymentDate(LocalDateTime.now());
+            Payment payment = new Payment();
+            payment.setCart(cart);
+            payment.setStatus(PaymentStatus.PAID);
+            payment.setItemsPrice(totalItemsPrice);
+            payment.setDeliveryPrice(deliveryPrice);
+            payment.setTotalPrice(totalPrice);
+            payment.setPaymentDate(LocalDateTime.now());
 
-        cartItemService.removeCartItemsAndDeleteFromCartAfterPayment(cartId);
+            cartItemService.removeCartItemsAndDeleteFromCartAfterPayment(cartId);
 
-        return paymentRepository.save(payment);
+            return paymentRepository.save(payment);
+        } else throw new UserNotAuthorisedToMakePayment(userIdentifier, cartId);
     }
 
     // TODO
