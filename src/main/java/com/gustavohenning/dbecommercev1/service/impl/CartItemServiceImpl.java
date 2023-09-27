@@ -95,6 +95,7 @@ public class CartItemServiceImpl implements CartItemService {
             } else throw new CartItemNotFoundException(cartItemId);
 
             return cartRepository.save(cart);
+
         } else throw new UserNotAuthorisedToSeeOrModifyCart(userIdentifier, cartId);
     }
 
@@ -116,7 +117,5 @@ public class CartItemServiceImpl implements CartItemService {
         for (CartItem cartItem : cartItemsToRemove) {
             cartItemRepository.delete(cartItem);
         }
-
     }
-
 }

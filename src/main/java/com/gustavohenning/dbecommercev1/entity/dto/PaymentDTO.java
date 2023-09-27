@@ -17,9 +17,7 @@ import java.time.LocalDateTime;
 public class PaymentDTO {
 
     private Long paymentId;
-
     private String status;
-
     private double totalPrice;
 
     @Column(updatable = false)

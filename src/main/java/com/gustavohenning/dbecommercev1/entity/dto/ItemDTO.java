@@ -31,6 +31,7 @@ public class ItemDTO {
     private LocalDateTime updatedDate;
 
     private List<Long> categoryIds;
+
     public static ItemDTO from(Item item) {
         ItemDTO itemDto = new ItemDTO();
         itemDto.setId(item.getId());

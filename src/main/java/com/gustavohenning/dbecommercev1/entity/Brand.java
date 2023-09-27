@@ -23,7 +23,6 @@ public class Brand {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     private String name;
 
     @Column(updatable = false)
@@ -32,7 +31,6 @@ public class Brand {
 
     @UpdateTimestamp
     private LocalDateTime updatedDate;
-
 
     public static Brand from(BrandDTO brandDto) {
         Brand brand = new Brand();
@@ -45,9 +43,5 @@ public class Brand {
         } else {
             return null;
         }
-
-
     }
-
-
 }

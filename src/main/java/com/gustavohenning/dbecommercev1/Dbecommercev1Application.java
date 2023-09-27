@@ -45,5 +45,4 @@ public class Dbecommercev1Application {
 			userRepository.save(admin);
 		};
 	}
-
 }

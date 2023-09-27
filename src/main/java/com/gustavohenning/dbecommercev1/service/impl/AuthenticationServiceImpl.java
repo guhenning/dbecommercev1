@@ -140,7 +140,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             ApplicationUser userAux = gson.fromJson(jsonPostalCode.toString(), ApplicationUser.class);
 
-
             user.setPostalCode(postalCode);
             user.setState(userAux.getState());
             user.setCity(userAux.getCity());
@@ -153,7 +152,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } else {
             throw new IllegalArgumentException("Invalid postal code only BR and ES available");
         }
-
         return user;
     }
 
@@ -179,7 +177,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (user == null) {
             return null;
         }
-
         UserDTO userDTO = new UserDTO();
         userDTO.setUsername(user.getUsername());
         userDTO.setUserId(user.getUserId());

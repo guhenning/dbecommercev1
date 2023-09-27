@@ -37,8 +37,6 @@ public class CartItem {
     @UpdateTimestamp
     private LocalDateTime updatedDate;
 
-
-
     public static CartItem from(CartItemDTO cartItemDto) {
         CartItem cartItem = new CartItem();
         cartItem.setCreatedDate(cartItemDto.getCreatedDate());

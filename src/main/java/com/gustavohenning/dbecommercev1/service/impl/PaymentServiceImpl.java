@@ -54,7 +54,6 @@ public class PaymentServiceImpl implements PaymentService {
             double deliveryPrice = calculateDeliveryPrice(cartId);
             double totalPrice = totalItemsPrice + deliveryPrice;
 
-
             Payment payment = new Payment();
             payment.setCart(cart);
             payment.setStatus(PaymentStatus.PAID);

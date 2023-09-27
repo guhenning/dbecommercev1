@@ -31,7 +31,6 @@ public class Cart {
     @JoinColumn(name = "user_id")
     private ApplicationUser user;
 
-
     private Long userId;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -41,30 +40,26 @@ public class Cart {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private List<Payment> payments = new ArrayList<>();
 
-
     @CreationTimestamp
     private LocalDateTime createdDate;
 
     @UpdateTimestamp
     private LocalDateTime updatedDate;
 
-
     public void addCartItem(CartItem cartItem) {
         cartItems.add(cartItem);
     }
 
-
     public void removeCartItem(CartItem cartItem) {
         cartItems.remove(cartItem);
     }
-
 
     public static Cart from(CartDTO cartDto) {
         Cart cart = new Cart();
         cart.setUserId(cartDto.getUserId());
         cart.setCreatedDate(cartDto.getCreatedDate());
         cart.setUpdatedDate(cartDto.getUpdatedDate());
+
         return cart;
     }
-
 }

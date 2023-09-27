@@ -13,5 +13,7 @@ public interface CartService {
 
     Cart getCart(Long id);
 
+    Cart getUserCart(Long id, String token);
+
 
 }

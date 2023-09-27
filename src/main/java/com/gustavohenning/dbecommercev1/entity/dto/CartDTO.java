@@ -15,9 +15,7 @@ import java.util.stream.Collectors;
 public class CartDTO {
 
     private Long id;
-
     List<CartItemDTO> cartItemsDto = new ArrayList<>();
-
     private double totalPrice;
     private double discountedPrice;
 
@@ -27,10 +25,7 @@ public class CartDTO {
     @UpdateTimestamp
     private LocalDateTime updatedDate;
 
-
     private Long userId;
-
-
 
     public static CartDTO from(Cart cart) {
         CartDTO cartDto = new CartDTO();
@@ -40,11 +35,8 @@ public class CartDTO {
                 .map(CartItemDTO::from)
                 .collect(Collectors.toList());
         cartDto.setCartItemsDto(cartItemDtos);
-
         cartDto.setCreatedDate(cart.getCreatedDate());
         cartDto.setUpdatedDate(cart.getUpdatedDate());
-
-
 
         double totalSalePrice = cartItemDtos.stream()
                 .mapToDouble(cartItemDto -> cartItemDto.getItemSalePrice() * cartItemDto.getItemQuantity())
@@ -53,7 +45,6 @@ public class CartDTO {
         double totalDiscountedPrice = cartItemDtos.stream()
                 .mapToDouble(cartItemDto -> (cartItemDto.getItemSalePrice() - cartItemDto.getItemSalePrice() * cartItemDto.getItemDiscount()) * cartItemDto.getItemQuantity())
                 .sum();
-
 
         // Format totalSalePrice to two decimal
         DecimalFormat decimalFormat = new DecimalFormat("#.00");

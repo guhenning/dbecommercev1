@@ -36,8 +36,6 @@ public class ItemServiceImpl implements ItemService {
         this.brandRepository = brandRepository;
     }
 
-
-
     public List<Item> getItems() {
         return new ArrayList<>(itemRepository.findAll());
     }
@@ -45,6 +43,7 @@ public class ItemServiceImpl implements ItemService {
     public Item getItem(Long id) {
         return itemRepository.findById(id).orElseThrow( () -> new ItemNotFoundException(id));
     }
+
     public List<Item> findByKeywordIgnoreCase(String keyword) {
         return itemRepository.findByKeywordIgnoreCase(keyword);
     }
@@ -79,6 +78,7 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.findByKeywordOrderByUpdatedDateDesc(keyword, pageable);
     }
 
+    //TODO Controller Method
     public Page<Item> getItemsOrderedByBiggerDiscount(String keyword, Pageable pageable) {
         int pageSize = pageable.getPageSize();
         if(pageSize > 100) {
@@ -120,8 +120,6 @@ public class ItemServiceImpl implements ItemService {
     public Item editItem(Long id, Item item) {
         Item itemToEdit = getItem(id);
 
-
-
         if (item.getName() != null) {
             itemToEdit.setName(item.getName());
         }
@@ -150,12 +148,10 @@ public class ItemServiceImpl implements ItemService {
         if (item.getBrand() != null){
             itemToEdit.setBrand(item.getBrand());
         }
-
         //TODO fix editing categories
         if (item.getCategories() != null){
             itemToEdit.setCategories(item.getCategories());
         }
-
         return itemToEdit;
     }
 
@@ -168,7 +164,6 @@ public class ItemServiceImpl implements ItemService {
         if (newStockQuantity < 0) {
             throw new ItemStockCannotBeNegative(id, previousStockQtn, newStockQuantity);
         }
-
         itemToEditStock.setStockQuantity(newStockQuantity);
         return itemToEditStock;
     }
@@ -178,6 +173,4 @@ public class ItemServiceImpl implements ItemService {
         itemRepository.delete(item);
         return item;
     }
-
-
 }

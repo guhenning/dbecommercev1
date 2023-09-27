@@ -23,7 +23,6 @@ public class CategoryController {
 
     @Autowired
     public CategoryController(CategoryService categoryService) {this.categoryService = categoryService;
-
     }
 
     @Operation(summary = "Get All Categories", description = "Get All Categories in DB")
@@ -33,12 +32,14 @@ public class CategoryController {
         List<CategoryDTO> categoriesDto = categories.stream().map(CategoryDTO::from).collect(Collectors.toList());
         return new ResponseEntity<>(categoriesDto, HttpStatus.OK);
     }
+
     @Operation(summary = "Get Category By ID", description = "Get Category from ID in DB")
     @GetMapping(value = "{id}")
     public ResponseEntity<CategoryDTO> getCategory(@PathVariable final Long id) {
         Category category = categoryService.getCategory(id);
         return new ResponseEntity<>(CategoryDTO.from(category), HttpStatus.OK);
     }
+
     @Operation(summary = "Get Categories By Name", description = "Get Categories By Name or Partial Name")
     @GetMapping("/name/{name}")
     public ResponseEntity<List<CategoryDTO>> searchCategoriesByName(@PathVariable String name) {
@@ -63,6 +64,7 @@ public class CategoryController {
         return new ResponseEntity<>(CategoryDTO.from(editedCategory), HttpStatus.OK);
 
     }
+
     @Operation(summary = "Delete Category by ID", description = "Delete the Category from ID in DB")
     @DeleteMapping(value = "{id}")
     @Secured("ROLE_ADMIN")
@@ -70,8 +72,4 @@ public class CategoryController {
         Category category = categoryService.deleteCategory(id);
         return new ResponseEntity<>(CategoryDTO.from(category), HttpStatus.OK);
     }
-
-
-
-
 }

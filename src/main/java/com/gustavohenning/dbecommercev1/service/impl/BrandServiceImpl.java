@@ -54,8 +54,8 @@ public class BrandServiceImpl implements BrandService {
             throw new DataIntegrityViolationException("Cannot delete a Brand that are associated with an or more Items," +
                     " please modify or delete the Items with this Brand");
         }
-
         brandRepository.delete(brand);
+
         return brand;
     }
 
@@ -73,7 +73,6 @@ public class BrandServiceImpl implements BrandService {
         } else {
             brandToEdit.setUpdatedDate(brand.getUpdatedDate());
         }
-
 
         return brandToEdit;
     }

@@ -14,14 +14,11 @@ public class CartItemDTO {
     private int    itemQuantity;
     private double itemTotalPrice;
     private double itemDiscountedPrice;
-
     private String itemName;
     private String itemShortDescription;
     private String itemImageUrl;
     private double itemSalePrice;
     private double itemDiscount;
-
-
 
     @CreationTimestamp
     private LocalDateTime createdDate;
@@ -30,8 +27,6 @@ public class CartItemDTO {
     private LocalDateTime updatedDate;
 
     private Long itemId;
-
-
     private PlainCartDTO plainCartDto;
 
     public static CartItemDTO from(CartItem cartItem) {
@@ -41,7 +36,6 @@ public class CartItemDTO {
         cartItemDto.setUpdatedDate(cartItem.getUpdatedDate());
         cartItemDto.setItemQuantity(cartItem.getItemQuantity());
         cartItemDto.setItemTotalPrice(cartItem.getItemQuantity() * cartItem.getItem().getSalePrice());
-
 
         double discountedPrice = (1 - cartItem.getItem().getDiscount()) * cartItemDto.getItemTotalPrice();
         cartItemDto.setItemDiscountedPrice(discountedPrice);
