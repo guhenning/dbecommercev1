@@ -50,21 +50,41 @@ public class ItemServiceImpl implements ItemService {
     }
 
     public Page<Item> findByKeywordIgnoreCaseWithPagination(String keyword, Pageable pageable) {
+        int pageSize = pageable.getPageSize();
+        if(pageSize > 100) {
+            pageSize = 100;
+        }
+        pageable = PageRequest.of(pageable.getPageNumber(), pageSize);
         return itemRepository.findByKeywordIgnoreCaseWithPagination(keyword, pageable);
     }
 
     public Page<Item> getItemsOrderedBySalesPrice(boolean ascending, String keyword, Pageable pageable) {
         Sort.Direction sortDirection = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
+        int pageSize = pageable.getPageSize();
+        if(pageSize > 100) {
+            pageSize = 100;
+        }
+        pageable = PageRequest.of(pageable.getPageNumber(), pageSize);
         return ascending
                 ? itemRepository.findByKeywordOrderBySalePriceAsc(keyword, pageable)
                 : itemRepository.findByKeywordOrderBySalePriceDesc(keyword, pageable);
     }
 
     public Page<Item> getItemsOrderedByRecentUpdatedDate(String keyword, Pageable pageable) {
+        int pageSize = pageable.getPageSize();
+        if(pageSize > 100) {
+            pageSize = 100;
+        }
+        pageable = PageRequest.of(pageable.getPageNumber(), pageSize);
         return itemRepository.findByKeywordOrderByUpdatedDateDesc(keyword, pageable);
     }
 
     public Page<Item> getItemsOrderedByBiggerDiscount(String keyword, Pageable pageable) {
+        int pageSize = pageable.getPageSize();
+        if(pageSize > 100) {
+            pageSize = 100;
+        }
+        pageable = PageRequest.of(pageable.getPageNumber(), pageSize);
         return itemRepository.findByKeywordOrderByDiscountDesc(keyword, pageable);
     }
 
