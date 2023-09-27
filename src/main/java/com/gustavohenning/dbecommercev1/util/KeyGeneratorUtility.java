@@ -19,5 +19,4 @@ public class KeyGeneratorUtility {
 
         return keyPair;
     }
-
 }

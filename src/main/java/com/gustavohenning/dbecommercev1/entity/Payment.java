@@ -30,9 +30,7 @@ public class Payment {
     private Cart cart;
 
     private double itemsPrice;
-
     private double deliveryPrice;
-
     private double totalPrice;
 
     @Column(updatable = false)
@@ -46,7 +44,6 @@ public class Payment {
     @UpdateTimestamp
     private LocalDateTime updatedDate;
 
-
     public static Payment from(PaymentDTO paymentDto) {
         Payment payment = new Payment();
         payment.setStatus(PaymentStatus.valueOf(paymentDto.getStatus()));
@@ -54,8 +51,7 @@ public class Payment {
         payment.setPaymentDate(paymentDto.getPaymentDate());
         payment.setCreatedDate(paymentDto.getCreatedDate());
         payment.setUpdatedDate(paymentDto.getUpdatedDate());
+
         return payment;
-
     }
-
 }

@@ -29,7 +29,6 @@ public class ItemController {
         this.itemService = itemService;
     }
 
-
     @Operation(summary = "Get All Items", description = "Get All Items in DB")
     @GetMapping
     @Secured("ROLE_ADMIN")
@@ -98,10 +97,6 @@ public class ItemController {
         return new ResponseEntity<>(itemDtos, HttpStatus.OK);
     }
 
-
-
-
-
     @Operation(summary = "Get Items By Category", description = "Get Items By Category")
     @GetMapping("/category")
     public ResponseEntity<List<ItemDTO>> getItemsByCategory(@RequestParam List<Long> categoryIds) {
@@ -109,6 +104,7 @@ public class ItemController {
         List<ItemDTO> itemDtos = items.stream().map(ItemDTO::from).collect(Collectors.toList());
         return new ResponseEntity<>(itemDtos, HttpStatus.OK);
     }
+
     @Operation(summary = "Get Items By Brand", description = "Get Items By Brand")
     @GetMapping("/brand/{brandId}")
     public ResponseEntity<List<ItemDTO>> getItemsByBrand(@PathVariable Long brandId) {

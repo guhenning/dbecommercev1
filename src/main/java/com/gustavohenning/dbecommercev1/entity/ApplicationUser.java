@@ -36,7 +36,6 @@ public class ApplicationUser implements UserDetails {
     @JsonIgnore
     private Cart cart;
 
-
     @ManyToMany(fetch=FetchType.EAGER)
     @JoinTable(
             name="user_role_junction",
@@ -44,11 +43,6 @@ public class ApplicationUser implements UserDetails {
             inverseJoinColumns = {@JoinColumn(name="role_id")}
     )
     private Set<Role> authorities;
-
-
-
-
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -74,6 +68,5 @@ public class ApplicationUser implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
 
 }

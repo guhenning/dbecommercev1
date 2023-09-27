@@ -55,6 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
                     " please modify or delete the Items with this Category");
         }
         categoryRepository.delete(category);
+
         return category;
     }
 
@@ -72,7 +73,6 @@ public class CategoryServiceImpl implements CategoryService {
         } else {
             categoryToEdit.setUpdatedDate(category.getUpdatedDate());
         }
-
 
         return categoryToEdit;
     }

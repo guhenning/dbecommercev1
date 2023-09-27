@@ -25,8 +25,6 @@ public class BrandController {
     public BrandController(BrandService brandService) {this.brandService = brandService;
     }
 
-
-
     @Operation(summary = "Get All Brands", description = "Get All Brands in DB")
     @GetMapping
     public ResponseEntity<List<BrandDTO>> getBrands() {
@@ -74,7 +72,4 @@ public class BrandController {
         Brand brand = brandService.deleteBrand(id);
         return new ResponseEntity<>(BrandDTO.from(brand), HttpStatus.OK);
     }
-
-
-
 }

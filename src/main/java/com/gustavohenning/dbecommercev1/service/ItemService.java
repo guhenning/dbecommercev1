@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface ItemService {
 
-
-
     List<Item> getItems();
 
     Item getItem(Long id);
@@ -22,6 +20,7 @@ public interface ItemService {
 
     Page<Item> getItemsOrderedByRecentUpdatedDate(String keyword, Pageable pageable);
 
+
     Page<Item> getItemsOrderedByBiggerDiscount(String keyword, Pageable pageable);
 
     List<Item> getItemsByCategoryIds(List<Long> categoryIds);
@@ -29,7 +28,6 @@ public interface ItemService {
     List<Item> getItemsByBrandId(Long brandId);
 
     Item addItem(Item item, List<Long> categoryIds, Long brandId);
-
 
     Item editItem(Long id, Item item);
 

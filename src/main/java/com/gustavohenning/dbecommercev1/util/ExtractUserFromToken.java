@@ -21,7 +21,6 @@ public class ExtractUserFromToken {
 
         Jwt decodedJwt = jwtDecoder.decode(cleanedToken);
 
-
         String userIdentifier = decodedJwt.getClaimAsString("sub");
 
         return userIdentifier;

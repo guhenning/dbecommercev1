@@ -18,12 +18,10 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     private String name;
 
    @ManyToMany(mappedBy = "categories")
     private List<Item> items;
-
 
     @Column(updatable = false)
     @CreationTimestamp
@@ -32,15 +30,12 @@ public class Category {
     @UpdateTimestamp
     private LocalDateTime updatedDate;
 
-
     public static Category from(CategoryDTO categoryDto) {
         Category category = new Category();
         category.setName(categoryDto.getName());
         category.setCreatedDate(categoryDto.getCreatedDate());
         category.setUpdatedDate(categoryDto.getUpdatedDate());
+
         return category;
-
     }
-
-
 }

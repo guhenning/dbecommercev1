@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class BrandDTO {
     private Long id;
     private String name;
+
     @CreationTimestamp
     private LocalDateTime createdDate;
 

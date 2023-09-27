@@ -29,7 +29,6 @@ public class Item {
     @OneToMany(mappedBy = "item")
     private List<CartItem> cartItems;
 
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "item_category", joinColumns = @JoinColumn(name = "item_id"), inverseJoinColumns = @JoinColumn(name = "category_id")    )
     private List<Category> categories;
@@ -45,11 +44,6 @@ public class Item {
     @UpdateTimestamp
     private LocalDateTime updatedDate;
 
-
-
-
-
-
     public static Item from(ItemDTO itemDto) {
         Item item = new Item();
         item.setName(itemDto.getName());
@@ -63,8 +57,7 @@ public class Item {
         item.setBrand(Brand.from(itemDto.getBrand()));
         item.setCreatedDate(itemDto.getCreatedDate());
         item.setUpdatedDate(itemDto.getUpdatedDate());
+
         return item;
     }
-
-
 }
