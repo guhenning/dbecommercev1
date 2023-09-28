@@ -61,7 +61,6 @@ public class BrandControllerTest {
 
     @Test
    public void testSearchBrandsByName() {
-        List<Brand> brands = new ArrayList<>();
         Brand brand1 = new Brand(1L, "Brand1", null, null);
         Brand brand2 = new Brand(2L, "Brand2", null, null);
         Brand brand3 = new Brand(3L, "Another", null, null);
@@ -100,8 +99,6 @@ public class BrandControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(updatedBrandDto, response.getBody());
         assertEquals(updatedBrand.getName(), response.getBody().getName());
-        System.out.println(response.getBody());
-
     }
 
     @Test
