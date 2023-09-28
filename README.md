@@ -21,10 +21,10 @@ This is a project of a E-Commerce Data Base using Spring Boot and JWT. Tests wit
 - In Development
 
 ## Author
-- [@Guhenning] (https://github.com/guhenning)
+- [@Guhenning](https://github.com/guhenning)
 
 ## LinkedIn
-- [Gustavo Henning] (https://www.linkedin.com/in/gustavo-henning/)
+- [Gustavo Henning](https://www.linkedin.com/in/gustavo-henning/)
 
 
 
