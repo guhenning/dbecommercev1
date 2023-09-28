@@ -67,12 +67,9 @@ public class BrandServiceImpl implements BrandService {
             brandToEdit.setName(brand.getName());
         }
 
-        LocalDateTime currentUpdateDate = brandToEdit.getUpdatedDate();
-        if (currentUpdateDate == null) {
-            brandToEdit.setUpdatedDate(brandToEdit.getCreatedDate());
-        } else {
-            brandToEdit.setUpdatedDate(brand.getUpdatedDate());
-        }
+        brandToEdit.setId(id);
+
+        brandToEdit.setUpdatedDate(LocalDateTime.now());
 
         return brandToEdit;
     }
