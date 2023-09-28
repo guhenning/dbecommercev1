@@ -67,12 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
             categoryToEdit.setName(category.getName());
         }
 
-        LocalDateTime currentUpdateDate = categoryToEdit.getUpdatedDate();
-        if (currentUpdateDate == null) {
-            categoryToEdit.setUpdatedDate(categoryToEdit.getCreatedDate());
-        } else {
-            categoryToEdit.setUpdatedDate(category.getUpdatedDate());
-        }
+        categoryToEdit.setUpdatedDate(LocalDateTime.now());
 
         return categoryToEdit;
     }
