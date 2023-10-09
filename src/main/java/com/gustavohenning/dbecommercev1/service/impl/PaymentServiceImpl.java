@@ -9,6 +9,7 @@ import com.gustavohenning.dbecommercev1.repository.CartRepository;
 import com.gustavohenning.dbecommercev1.repository.PaymentRepository;
 import com.gustavohenning.dbecommercev1.repository.UserRepository;
 import com.gustavohenning.dbecommercev1.service.CartItemService;
+import com.gustavohenning.dbecommercev1.service.EmailSenderService;
 import com.gustavohenning.dbecommercev1.service.PaymentService;
 import com.gustavohenning.dbecommercev1.util.CartOwner;
 import com.gustavohenning.dbecommercev1.util.ExtractUserFromToken;
@@ -28,15 +29,17 @@ public class PaymentServiceImpl implements PaymentService {
     private final CartItemService cartItemService;
     private final CartOwner cartOwner;
     private final ExtractUserFromToken extractUserFromToken;
+    private final EmailSenderService emailSenderService;
 
     @Autowired
-    public PaymentServiceImpl(CartRepository cartRepository, PaymentRepository paymentRepository, UserRepository userRepository, CartItemService cartItemService, CartOwner cartOwner, ExtractUserFromToken extractUserFromToken) {
+    public PaymentServiceImpl(CartRepository cartRepository, PaymentRepository paymentRepository, UserRepository userRepository, CartItemService cartItemService, CartOwner cartOwner, ExtractUserFromToken extractUserFromToken, EmailSenderService emailSenderService) {
         this.cartRepository = cartRepository;
         this.paymentRepository = paymentRepository;
         this.userRepository = userRepository;
         this.cartItemService = cartItemService;
         this.cartOwner = cartOwner;
         this.extractUserFromToken = extractUserFromToken;
+        this.emailSenderService = emailSenderService;
     }
 
     @Transactional
@@ -48,10 +51,13 @@ public class PaymentServiceImpl implements PaymentService {
             Cart cart = cartRepository.findById(cartId)
                     .orElseThrow(() -> new CartNotFoundException(cartId));
 
+            // Calculate Total of Items
             double totalItemsPrice = cart.getCartItems().stream()
                     .mapToDouble(cartItem -> cartItem.getItem().getSalePrice() * cartItem.getItemQuantity())
                     .sum();
+            //Calculate Delivery Price
             double deliveryPrice = calculateDeliveryPrice(cartId);
+            //Calculate Total of operation
             double totalPrice = totalItemsPrice + deliveryPrice;
 
             Payment payment = new Payment();
@@ -62,9 +68,13 @@ public class PaymentServiceImpl implements PaymentService {
             payment.setTotalPrice(totalPrice);
             payment.setPaymentDate(LocalDateTime.now());
 
-            cartItemService.removeCartItemsAndDeleteFromCartAfterPayment(cartId);
 
-            return paymentRepository.save(payment);
+            cartItemService.removeCartItemsAndDeleteFromCartAfterPayment(cartId);
+            paymentRepository.save(payment);
+
+            emailSenderService.sendEmail(userIdentifier, "Items Price: "+ totalItemsPrice + " Delivery Price: " + deliveryPrice + " Total Price: " + totalPrice, "Payment Complete");
+
+            return payment;
         } else throw new UserNotAuthorisedToMakePayment(userIdentifier, cartId);
     }
 

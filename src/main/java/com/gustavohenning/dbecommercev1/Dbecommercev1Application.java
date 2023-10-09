@@ -7,10 +7,15 @@ import com.gustavohenning.dbecommercev1.repository.CartRepository;
 import com.gustavohenning.dbecommercev1.repository.RoleRepository;
 import com.gustavohenning.dbecommercev1.repository.UserRepository;
 import com.gustavohenning.dbecommercev1.service.CartService;
+import com.gustavohenning.dbecommercev1.service.EmailSenderService;
+import jakarta.mail.MessagingException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashSet;
@@ -19,9 +24,14 @@ import java.util.Set;
 @SpringBootApplication
 public class Dbecommercev1Application {
 
+
+
 	public static void main(String[] args) {
 		SpringApplication.run(Dbecommercev1Application.class, args);
 	}
+
+
+
 
 	@Bean
 	CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncode, CartService cartService, CartRepository cartRepository){
