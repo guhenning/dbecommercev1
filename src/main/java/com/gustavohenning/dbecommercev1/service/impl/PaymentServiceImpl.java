@@ -1,5 +1,6 @@
 package com.gustavohenning.dbecommercev1.service.impl;
 
+import com.gustavohenning.dbecommercev1.entity.ApplicationUser;
 import com.gustavohenning.dbecommercev1.entity.Cart;
 import com.gustavohenning.dbecommercev1.entity.Payment;
 import com.gustavohenning.dbecommercev1.entity.PaymentStatus;
@@ -13,12 +14,19 @@ import com.gustavohenning.dbecommercev1.service.EmailSenderService;
 import com.gustavohenning.dbecommercev1.service.PaymentService;
 import com.gustavohenning.dbecommercev1.util.CartOwner;
 import com.gustavohenning.dbecommercev1.util.ExtractUserFromToken;
+import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Customer;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -30,6 +38,9 @@ public class PaymentServiceImpl implements PaymentService {
     private final CartOwner cartOwner;
     private final ExtractUserFromToken extractUserFromToken;
     private final EmailSenderService emailSenderService;
+
+    @Value("${stripe.apikey}")
+    String stripekey;
 
     @Autowired
     public PaymentServiceImpl(CartRepository cartRepository, PaymentRepository paymentRepository, UserRepository userRepository, CartItemService cartItemService, CartOwner cartOwner, ExtractUserFromToken extractUserFromToken, EmailSenderService emailSenderService) {
@@ -43,40 +54,68 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Transactional
-    public Payment makePayment(Long cartId, @RequestHeader("Authorization") String token) {
+    public Payment makePayment(Long cartId, @RequestHeader("Authorization") String token) throws StripeException {
         String userIdentifier = extractUserFromToken.extractUserIdentifier(token);
 
+
         if (cartOwner.isCartOwner(cartId, userIdentifier)) {
+            // Create user to send data to stripe
+            Optional<ApplicationUser> userOptional = userRepository.findByUsername(userIdentifier);
+            ApplicationUser user = userOptional.orElse(null);
 
-            Cart cart = cartRepository.findById(cartId)
-                    .orElseThrow(() -> new CartNotFoundException(cartId));
+            if (user != null) {
+                // Create user in stripe
+                Stripe.apiKey = stripekey;
+                Map<String, Object> params = new HashMap<>();
+                params.put("name", user.getName());
+                params.put("email", user.getUsername());
 
-            // Calculate Total of Items
-            double totalItemsPrice = cart.getCartItems().stream()
-                    .mapToDouble(cartItem -> cartItem.getItem().getSalePrice() * cartItem.getItemQuantity())
-                    .sum();
-            //Calculate Delivery Price
-            double deliveryPrice = calculateDeliveryPrice(cartId);
-            //Calculate Total of operation
-            double totalPrice = totalItemsPrice + deliveryPrice;
+                Map<String, Object> addressParams = new HashMap<>();
+                addressParams.put("line1", user.getStreet());
+                addressParams.put("line2", user.getNeighborhood());
+                addressParams.put("city", user.getCity());
+                addressParams.put("state", user.getState());
+                addressParams.put("postal_code", user.getPostalCode());
 
-            Payment payment = new Payment();
-            payment.setCart(cart);
-            payment.setStatus(PaymentStatus.PAID);
-            payment.setItemsPrice(totalItemsPrice);
-            payment.setDeliveryPrice(deliveryPrice);
-            payment.setTotalPrice(totalPrice);
-            payment.setPaymentDate(LocalDateTime.now());
+                params.put("address", addressParams);
+
+                Customer customer = Customer.create(params);
 
 
-            cartItemService.removeCartItemsAndDeleteFromCartAfterPayment(cartId);
-            paymentRepository.save(payment);
+                Cart cart = cartRepository.findById(cartId)
+                        .orElseThrow(() -> new CartNotFoundException(cartId));
 
-            emailSenderService.sendEmail(userIdentifier, "Items Price: "+ totalItemsPrice + " Delivery Price: " + deliveryPrice + " Total Price: " + totalPrice, "Payment Complete");
+                // Calculate Total of Items
+                double totalItemsPrice = cart.getCartItems().stream()
+                        .mapToDouble(cartItem -> cartItem.getItem().getSalePrice() * cartItem.getItemQuantity())
+                        .sum();
+                //Calculate Delivery Price
+                double deliveryPrice = calculateDeliveryPrice(cartId);
+                //Calculate Total of operation
+                double totalPrice = totalItemsPrice + deliveryPrice;
 
-            return payment;
-        } else throw new UserNotAuthorisedToMakePayment(userIdentifier, cartId);
+                Payment payment = new Payment();
+                payment.setCart(cart);
+                payment.setStatus(PaymentStatus.PAID);
+                payment.setStripeCustomerId(customer.getId());
+                payment.setItemsPrice(totalItemsPrice);
+                payment.setDeliveryPrice(deliveryPrice);
+                payment.setTotalPrice(totalPrice);
+                payment.setPaymentDate(LocalDateTime.now());
+
+
+                cartItemService.removeCartItemsAndDeleteFromCartAfterPayment(cartId);
+                paymentRepository.save(payment);
+
+//                emailSenderService.sendEmail(userIdentifier, "Items Price: " + totalItemsPrice + " Delivery Price: " + deliveryPrice + " Total Price: " + totalPrice, "Payment Complete");
+//
+                return payment;
+            }
+
+            } else throw new UserNotAuthorisedToMakePayment(userIdentifier, cartId);
+        return null;
     }
+
 
     // TODO
     private double calculateDeliveryPrice(Long cartId) {
