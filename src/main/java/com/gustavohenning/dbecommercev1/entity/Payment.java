@@ -1,6 +1,7 @@
 package com.gustavohenning.dbecommercev1.entity;
 
 import com.gustavohenning.dbecommercev1.entity.dto.PaymentDTO;
+import com.stripe.Stripe;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,6 +30,8 @@ public class Payment {
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
+    private String stripeCustomerId;
+
     private double itemsPrice;
     private double deliveryPrice;
     private double totalPrice;
@@ -47,6 +50,7 @@ public class Payment {
     public static Payment from(PaymentDTO paymentDto) {
         Payment payment = new Payment();
         payment.setStatus(PaymentStatus.valueOf(paymentDto.getStatus()));
+        payment.setStripeCustomerId(paymentDto.getStripeCustomerId());
         payment.setTotalPrice(paymentDto.getTotalPrice());
         payment.setPaymentDate(paymentDto.getPaymentDate());
         payment.setCreatedDate(paymentDto.getCreatedDate());

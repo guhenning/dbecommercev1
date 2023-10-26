@@ -20,6 +20,8 @@ public class PaymentDTO {
     private String status;
     private double totalPrice;
 
+    private String stripeCustomerId;
+
     @Column(updatable = false)
     @CreationTimestamp
     private LocalDateTime paymentDate;
@@ -34,6 +36,7 @@ public class PaymentDTO {
         PaymentDTO paymentDto = new PaymentDTO();
         paymentDto.setPaymentId(payment.getId());
         paymentDto.setStatus(payment.getStatus().toString());
+        paymentDto.setStripeCustomerId(payment.getStripeCustomerId());
         paymentDto.setTotalPrice(payment.getTotalPrice());
         paymentDto.setPaymentDate(payment.getPaymentDate());
         paymentDto.setCreatedDate(payment.getCreatedDate());
@@ -41,4 +44,6 @@ public class PaymentDTO {
 
         return paymentDto;
     }
+
+
 }
