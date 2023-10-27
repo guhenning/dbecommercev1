@@ -4,6 +4,8 @@ import com.gustavohenning.dbecommercev1.entity.Brand;
 import com.gustavohenning.dbecommercev1.entity.Payment;
 import com.gustavohenning.dbecommercev1.entity.dto.BrandDTO;
 import com.gustavohenning.dbecommercev1.entity.dto.PaymentDTO;
+import com.gustavohenning.dbecommercev1.entity.dto.StripeChargeDTO;
+import com.gustavohenning.dbecommercev1.entity.dto.StripeTokenDTO;
 import com.gustavohenning.dbecommercev1.service.PaymentService;
 import com.stripe.exception.StripeException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,9 +37,18 @@ public class PaymentController {
             return new ResponseEntity<>(PaymentDTO.from(payment), HttpStatus.CREATED);
     }
 
-    @GetMapping("/pay")
-    public String index() {
-        return "Api = " + stripekey;
+    @PostMapping("/card/token")
+    @ResponseBody
+    public StripeTokenDTO createCardToken(@RequestBody StripeTokenDTO model) {
+        return paymentService.createCardToken(model);
     }
+
+    @PostMapping("/charge")
+    @ResponseBody
+    public StripeChargeDTO charge(@RequestBody StripeChargeDTO model) {
+        return paymentService.charge(model);
+    }
+
+
 }
 

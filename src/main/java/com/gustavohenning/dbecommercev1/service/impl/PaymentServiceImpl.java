@@ -4,6 +4,8 @@ import com.gustavohenning.dbecommercev1.entity.ApplicationUser;
 import com.gustavohenning.dbecommercev1.entity.Cart;
 import com.gustavohenning.dbecommercev1.entity.Payment;
 import com.gustavohenning.dbecommercev1.entity.PaymentStatus;
+import com.gustavohenning.dbecommercev1.entity.dto.StripeChargeDTO;
+import com.gustavohenning.dbecommercev1.entity.dto.StripeTokenDTO;
 import com.gustavohenning.dbecommercev1.entity.exception.CartNotFoundException;
 import com.gustavohenning.dbecommercev1.entity.exception.UserNotAuthorisedToMakePayment;
 import com.gustavohenning.dbecommercev1.repository.CartRepository;
@@ -16,7 +18,9 @@ import com.gustavohenning.dbecommercev1.util.CartOwner;
 import com.gustavohenning.dbecommercev1.util.ExtractUserFromToken;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Customer;
+import com.stripe.model.*;
+import com.stripe.param.PaymentIntentCreateParams;
+import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,7 +44,15 @@ public class PaymentServiceImpl implements PaymentService {
     private final EmailSenderService emailSenderService;
 
     @Value("${stripe.apikey}")
-    String stripekey;
+    String stripeApiKey;
+
+    @PostConstruct
+    public void init(){
+
+        Stripe.apiKey = stripeApiKey;
+    }
+
+
 
     @Autowired
     public PaymentServiceImpl(CartRepository cartRepository, PaymentRepository paymentRepository, UserRepository userRepository, CartItemService cartItemService, CartOwner cartOwner, ExtractUserFromToken extractUserFromToken, EmailSenderService emailSenderService) {
@@ -65,7 +77,7 @@ public class PaymentServiceImpl implements PaymentService {
 
             if (user != null) {
                 // Create user in stripe
-                Stripe.apiKey = stripekey;
+                Stripe.apiKey = stripeApiKey;
                 Map<String, Object> params = new HashMap<>();
                 params.put("name", user.getName());
                 params.put("email", user.getUsername());
@@ -115,6 +127,59 @@ public class PaymentServiceImpl implements PaymentService {
             } else throw new UserNotAuthorisedToMakePayment(userIdentifier, cartId);
         return null;
     }
+
+
+    public StripeTokenDTO createCardToken(StripeTokenDTO model) {
+        try {
+            Stripe.apiKey = stripeApiKey;
+
+            // Create a Customer with a PaymentMethod attached (e.g., "pm_card_visa")
+            Map<String, Object> customerParams = new HashMap<>();
+            customerParams.put("payment_method", "pm_card_visa");
+
+            Customer customer = Customer.create(customerParams);
+
+            if (customer != null && customer.getId() != null) {
+                model.setSuccess(true);
+                model.setToken(customer.getId());
+            }
+            return model;
+        } catch (StripeException e) {
+            // Handle exceptions or log errors here
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+
+    public StripeChargeDTO charge(StripeChargeDTO chargeRequest) {
+        try {
+            chargeRequest.setSuccess(false);
+
+            Stripe.apiKey = stripeApiKey;
+
+            PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
+                    .setAmount((long) chargeRequest.getAmount() * 100)
+                    .setCurrency("eur")
+                    .setPaymentMethod(chargeRequest.getStripeToken())
+                    .build();
+
+            PaymentIntent paymentIntent = PaymentIntent.create(params);
+
+            // Confirm the PaymentIntent to complete the payment
+            PaymentIntent confirmedIntent = paymentIntent.confirm();
+
+            if ("succeeded".equals(confirmedIntent.getStatus())) {
+                chargeRequest.setChargeId(confirmedIntent.getId());
+                chargeRequest.setSuccess(true);
+            }
+
+            return chargeRequest;
+        } catch (StripeException e) {
+            // Handle exceptions or log errors here
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
 
 
     // TODO
