@@ -133,7 +133,7 @@ public class PaymentServiceImpl implements PaymentService {
         try {
             Stripe.apiKey = stripeApiKey;
 
-            // Create a Customer with a PaymentMethod attached (e.g., "pm_card_visa")
+
             Map<String, Object> customerParams = new HashMap<>();
             customerParams.put("payment_method", "pm_card_visa");
 
@@ -158,7 +158,7 @@ public class PaymentServiceImpl implements PaymentService {
             Stripe.apiKey = stripeApiKey;
 
             PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
-                    .setAmount((long) chargeRequest.getAmount() * 100)
+                    .setAmount((long) chargeRequest.getAmount() * 100) //100 converts cents to 1 100cents = 1
                     .setCurrency("eur")
                     .setPaymentMethod(chargeRequest.getStripeToken())
                     .build();
